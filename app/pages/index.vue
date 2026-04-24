@@ -22,6 +22,8 @@ const { data: sections } = await useFetch<HomepageSection[]>(`${config.public.ap
 const { data: featuredProducts } = await useFetch<Product[]>(`${config.public.apiBase}/products/featured`, { default: () => [] })
 const { data: featuredPosts } = await useFetch<Post[]>(`${config.public.apiBase}/blog/featured`, { default: () => [] })
 const { data: heroBanners } = await useFetch<BannerSlide[]>(`${config.public.apiBase}/banners`, { params: { position: 'hero' }, default: () => [] })
+const { data: videos } = await useFetch<any[]>(`${config.public.apiBase}/videos`, { default: () => [] })
+const { data: catalogues } = await useFetch<any[]>(`${config.public.apiBase}/catalogues`, { default: () => [] })
 
 const mainSlides = computed(() => {
   const banners = heroBanners.value ?? []
@@ -67,6 +69,39 @@ const featuredGridLink = computed(() => {
 function productLink(product: Product): string {
   const catSlug = product.category?.slug || 'san-pham'
   return `/${catSlug}/${product.slug}`
+}
+
+// Video popup
+const showVideoPopup = ref(false)
+const activeVideo = ref<any>(null)
+
+function openVideo(video: any) {
+  activeVideo.value = video
+  showVideoPopup.value = true
+}
+function closeVideo() {
+  showVideoPopup.value = false
+  setTimeout(() => { activeVideo.value = null }, 300)
+}
+
+const processedEmbed = computed(() => {
+  if (!activeVideo.value?.embed_code) return ''
+  let code = activeVideo.value.embed_code
+  code = code.replace(/width="\d+"/g, 'width="100%"')
+  code = code.replace(/height="\d+"/g, 'height="100%"')
+  // Also ensure iframe has style for full container fill
+  if (code.includes('<iframe') && !code.includes('style=')) {
+    code = code.replace('<iframe', '<iframe style="width:100%;height:100%"')
+  }
+  return code
+})
+
+// Catalogue download
+async function downloadCatalogue(catalogue: any) {
+  try {
+    await $fetch(`${config.public.apiBase}/catalogues/${catalogue.id}/download`, { method: 'POST' })
+  } catch {}
+  window.open(catalogue.file_url, '_blank')
 }
 
 useSeoMeta({ title: 'LG Tech - Thiết bị điện cao cấp', description: 'LG Tech - Chuyên cung cấp ổ cắm, công tắc, thiết bị điện cao cấp.' })
@@ -311,40 +346,71 @@ onMounted(() => {
     </template>
 
     <!-- ============ VIDEOS SECTION ============ -->
-    <section class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
+    <section v-if="videos && videos.length > 0" class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6" style="font-family: serif;">Videos</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div v-for="i in 4" :key="i" class="group">
-            <div class="video-card">
-              <div class="w-full h-full bg-[#e8e2d8]"></div>
+          <div v-for="video in videos.slice(0, 8)" :key="video.id" class="group cursor-pointer" @click="openVideo(video)">
+            <div class="video-card relative">
+              <img v-if="video.thumbnail" :src="video.thumbnail" :alt="video.title" class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full bg-[#e8e2d8] flex items-center justify-center">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+              </div>
               <div class="play-btn">
-                <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
             </div>
-            <p class="text-sm text-gray-700 mt-2 line-clamp-2">Video giới thiệu sản phẩm LG Tech</p>
+            <p class="text-sm text-gray-700 mt-2 line-clamp-2 group-hover:text-[#c8102e] transition-colors">{{ video.title }}</p>
           </div>
-        </div>
-        <div class="text-center mt-6">
-          <NuxtLink to="#" class="inline-block bg-[#c8102e] text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-red-700 transition-colors">
-            Xem tất cả
-          </NuxtLink>
         </div>
       </div>
     </section>
 
+    <!-- Video Popup Modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showVideoPopup && activeVideo" class="fixed inset-0 z-[100] flex items-center justify-center" @click.self="closeVideo">
+          <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+          <div class="relative w-full max-w-4xl mx-4 animate-scale-in">
+            <button @click="closeVideo" class="absolute -top-10 right-0 text-white/80 hover:text-white text-sm flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              Đóng
+            </button>
+            <!-- Embed video -->
+            <div v-if="activeVideo.source === 'embed' && activeVideo.embed_code" class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl" v-html="processedEmbed"></div>
+            <!-- Uploaded video -->
+            <div v-else-if="activeVideo.video_url" class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
+              <video :src="activeVideo.video_url" controls autoplay class="w-full h-full"></video>
+            </div>
+            <div class="mt-3 text-center">
+              <h3 class="text-white text-lg font-semibold">{{ activeVideo.title }}</h3>
+              <p v-if="activeVideo.description" class="text-white/60 text-sm mt-1">{{ activeVideo.description }}</p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- ============ DOWNLOAD CATALOGUE ============ -->
-    <section class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
+    <section v-if="catalogues && catalogues.length > 0" class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6" style="font-family: serif;">Download catalogue</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="catalogue-card">
-            <h4 class="text-[#c8102e]">LG TECH CATALOGUE</h4>
-            <a href="#" class="inline-block bg-[#c8102e] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-red-700 transition-colors">Download</a>
-          </div>
-          <div class="catalogue-card">
-            <h4 class="text-gray-700 italic">NHẬN CHÍNH SÁCH ĐẠI LÝ</h4>
-            <a href="#" class="inline-block bg-[#c8102e] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-red-700 transition-colors">Click me</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="cat in catalogues" :key="cat.id" class="catalogue-card group">
+            <div class="flex items-start gap-4">
+              <div class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-[#e8e2d8] flex items-center justify-center">
+                <img v-if="cat.cover_image" :src="cat.cover_image" :alt="cat.title" class="w-full h-full object-cover" />
+                <svg v-else class="w-8 h-8 text-[#c8102e]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-[#c8102e] font-bold text-sm mb-1">{{ cat.title }}</h4>
+                <p v-if="cat.description" class="text-xs text-gray-500 line-clamp-2 mb-3">{{ cat.description }}</p>
+                <button @click="downloadCatalogue(cat)" class="inline-flex items-center gap-1.5 bg-[#c8102e] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  Download
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -376,4 +442,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Video popup animations */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+.animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 </style>
