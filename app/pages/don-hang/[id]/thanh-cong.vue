@@ -11,7 +11,7 @@ const { data: order } = await useFetch<any>(
 )
 
 useSeoMeta({
-  title: 'Đặt hàng thành công - PC Shop',
+  title: 'Đặt hàng thành công - Lgtech',
 })
 </script>
 
@@ -26,7 +26,7 @@ useSeoMeta({
       </h1>
       
       <p class="text-xl text-gray-600 mb-8">
-        Cảm ơn bạn đã tin tưởng PC Shop
+        Cảm ơn bạn đã tin tưởng Lgtech
       </p>
 
       <template v-if="order">

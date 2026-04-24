@@ -52,7 +52,7 @@ const register = async () => {
 }
 
 useSeoMeta({
-  title: 'Đăng ký - PC Shop',
+  title: 'Đăng ký - Lgtech',
 })
 </script>
 
@@ -62,7 +62,7 @@ useSeoMeta({
       <div class="bg-white rounded-2xl shadow-lg p-8">
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold mb-2">Đăng ký</h1>
-          <p class="text-gray-600">Tạo tài khoản PC Shop</p>
+          <p class="text-gray-600">Tạo tài khoản Lgtech</p>
         </div>
 
         <form @submit.prevent="register" class="space-y-4">

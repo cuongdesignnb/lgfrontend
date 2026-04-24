@@ -15,7 +15,7 @@ export interface Product {
   is_featured: boolean
   brand?: Brand
   category?: Category
-  component_type?: ComponentType
+
   images?: ProductImage[]
   specifications?: ProductSpecification[]
   parsed_specifications?: { label: string; value: string }[]
@@ -63,16 +63,7 @@ export interface Brand {
   logo: string | null
 }
 
-// Component types
-export interface ComponentType {
-  id: number
-  name: string
-  slug: string
-  description: string | null
-  icon: string | null
-  sort_order: number
-  is_required: boolean
-}
+
 
 // Review types
 export interface Review {

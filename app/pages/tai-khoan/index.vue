@@ -65,7 +65,7 @@ const getOrderStatusBadge = (status: string): { bg: string; text: string; label:
 }
 
 useSeoMeta({
-  title: 'Tài khoản - PC Shop',
+  title: 'Tài khoản - Lgtech',
 })
 </script>
 

@@ -183,7 +183,7 @@ const isFormValid = computed(() => {
 });
 
 useSeoMeta({
-  title: "Thanh toán - PC Shop",
+  title: "Thanh toán - Lgtech",
 });
 </script>
 

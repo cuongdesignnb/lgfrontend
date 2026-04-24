@@ -51,7 +51,7 @@ const formatDate = (date: string | null) => {
 }
 
 useSeoMeta({
-  title: 'Blog & Tin tức - PC Shop',
+  title: 'Blog & Tin tức - Lgtech',
   description: 'Tin tức công nghệ, hướng dẫn build PC, review sản phẩm mới nhất',
 })
 </script>

@@ -87,10 +87,10 @@ function toggleMobileSubmenu(id: number) {
             :to="resolveUrl(item)"
             :target="item.target"
             :class="[
-              'relative flex items-center gap-1 px-3 py-2.5 text-[13px] font-semibold tracking-wide uppercase transition-colors',
+              'relative flex items-center gap-1 px-4 py-3 text-sm font-medium transition-colors',
               activeMenu === item.id
-                ? 'text-primary-600'
-                : 'text-gray-700 hover:text-primary-600',
+                ? 'text-gray-900'
+                : 'text-gray-600 hover:text-gray-900',
             ]"
           >
             <span>{{ item.title }}</span>
@@ -112,7 +112,7 @@ function toggleMobileSubmenu(id: number) {
             <!-- active indicator -->
             <span
               v-if="activeMenu === item.id"
-              class="absolute bottom-0 left-3 right-3 h-0.5 bg-primary-600 rounded-full"
+              class="absolute bottom-0 left-4 right-4 h-0.5 bg-[#c8102e] rounded-full"
             />
           </NuxtLink>
 
@@ -241,7 +241,7 @@ function toggleMobileSubmenu(id: number) {
           <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
             <NuxtLink to="/" class="flex items-center gap-2" @click="mobileOpen = false">
               <div class="w-7 h-7 bg-primary-600 rounded-md flex items-center justify-center text-white font-bold text-xs">PC</div>
-              <span class="text-lg font-bold text-gray-900">PC Shop</span>
+              <span class="text-lg font-bold text-gray-900">Lgtech</span>
             </NuxtLink>
             <button @click="mobileOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

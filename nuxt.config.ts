@@ -16,25 +16,25 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api/v1',
-      appName: 'PC Shop',
+      appName: 'Lgtech',
     }
   },
 
   // Nitro server config
   nitro: {
     routeRules: {
-      '/api/**': { proxy: (process.env.NUXT_API_PROXY_TARGET || 'http://nginx') + '/api/**' },
+      '/api/**': { proxy: (process.env.NUXT_API_PROXY_TARGET || 'http://localhost:8901') + '/api/**' },
     },
   },
 
   // App config
   app: {
     head: {
-      title: 'PC Shop - Bán PC & Laptop',
+      title: 'LG Tech - Thiết bị điện cao cấp',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Website bán PC, Laptop và linh kiện máy tính với tính năng xây dựng cấu hình thông minh' },
+        { name: 'description', content: 'Lgtech - Website bán hàng công nghệ, sản phẩm chính hãng giá tốt' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -48,7 +48,7 @@ export default defineNuxtConfig({
     '/products/**': { isr: 60 },
     '/categories/**': { isr: 300 },
     '/blog/**': { swr: 3600 },
-    '/configurator/**': { ssr: false },
+
     '/cart': { ssr: false },
     '/checkout/**': { ssr: false },
     '/account/**': { ssr: false },

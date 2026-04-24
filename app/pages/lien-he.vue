@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Liên hệ - PC Shop',
-  description: 'Liên hệ PC Shop - Hỗ trợ mua hàng, tư vấn kỹ thuật, bảo hành.',
+  title: 'Liên hệ - Lgtech',
+  description: 'Liên hệ Lgtech - Hỗ trợ mua hàng, tư vấn kỹ thuật, bảo hành.',
 })
 </script>
 

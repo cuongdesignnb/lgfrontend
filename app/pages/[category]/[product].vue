@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import type { Product, ComponentType } from '~/types'
+import type { Product } from '~/types'
 
 interface ProductDetailResponse {
   product: Product
   related: Product[]
-}
-
-interface SuggestionGroup {
-  component_type: ComponentType
-  products: Product[]
-}
-
-interface SuggestionsResponse {
-  suggestions: SuggestionGroup[]
 }
 
 const config = useRuntimeConfig()
@@ -26,35 +17,6 @@ const { data } = await useFetch<ProductDetailResponse>(`${config.public.apiBase}
 
 const product = computed(() => data.value?.product)
 const relatedProducts = computed(() => data.value?.related || [])
-
-// Compatible product suggestions (lazy AJAX)
-const suggestions = ref<SuggestionGroup[]>([])
-const loadingSuggestions = ref(false)
-const activeSuggestionTab = ref(0)
-
-const loadSuggestions = async () => {
-  if (!product.value?.component_type) return
-  loadingSuggestions.value = true
-  try {
-    const res = await $fetch<SuggestionsResponse>(
-      `${config.public.apiBase}/products/${slug}/suggestions`
-    )
-    suggestions.value = res.suggestions || []
-  } catch (e) {
-    console.error('Error loading suggestions:', e)
-  } finally {
-    loadingSuggestions.value = false
-  }
-}
-
-// Auto-load suggestions when product has a component type
-watch(
-  () => product.value?.component_type,
-  (ct) => {
-    if (ct) loadSuggestions()
-  },
-  { immediate: true }
-)
 
 // Format price
 const formatPrice = (price: number) => {
@@ -197,7 +159,7 @@ const submitReview = async () => {
 
 // SEO
 useSeoMeta({
-  title: () => product.value?.name ? `${product.value.name} - PC Shop` : 'Sản phẩm - PC Shop',
+  title: () => product.value?.name ? `${product.value.name} - Lgtech` : 'Sản phẩm - Lgtech',
   description: () => product.value?.short_description || product.value?.meta_description,
 })
 </script>
@@ -651,7 +613,7 @@ useSeoMeta({
                   <p class="text-xs text-amber-600 mt-1 font-medium">{{ product.reviews.length }} lượt đánh giá</p>
                 </div>
                 <div class="flex-1 flex items-center">
-                  <p class="text-sm text-amber-700/80 leading-relaxed">Đánh giá từ những khách hàng đã mua và sử dụng sản phẩm tại PC Shop.</p>
+                  <p class="text-sm text-amber-700/80 leading-relaxed">Đánh giá từ những khách hàng đã mua và sử dụng sản phẩm tại Lgtech.</p>
                 </div>
               </div>
             </div>
@@ -694,7 +656,7 @@ useSeoMeta({
                   <p v-if="review.title" class="font-semibold text-gray-800 mb-1">{{ review.title }}</p>
                   <p class="text-gray-600 leading-relaxed">{{ review.body }}</p>
                   <p v-if="review.admin_reply" class="mt-3 text-sm text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
-                    Phản hồi từ PC Shop: {{ review.admin_reply }}
+                    Phản hồi từ Lgtech: {{ review.admin_reply }}
                   </p>
                 </div>
               </div>
@@ -707,106 +669,7 @@ useSeoMeta({
           </div>
         </div>
 
-        <!-- ===== Compatible Product Suggestions ===== -->
-        <div v-if="product.component_type && (loadingSuggestions || suggestions.length)" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div class="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-              </div>
-              <div>
-                <h2 class="text-xl font-bold text-gray-900">Linh kiện tương thích</h2>
-                <p class="text-sm text-gray-500">Gợi ý sản phẩm phù hợp với {{ product.name }}</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Loading state -->
-          <div v-if="loadingSuggestions" class="p-8 text-center">
-            <div class="inline-flex items-center gap-3 text-gray-500">
-              <svg class="animate-spin h-5 w-5 text-primary-500" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <span>Đang tìm linh kiện tương thích...</span>
-            </div>
-          </div>
 
-          <!-- Suggestions tabs + products -->
-          <template v-else-if="suggestions.length">
-            <!-- Tabs -->
-            <div class="flex border-b overflow-x-auto px-6 lg:px-8">
-              <button
-                v-for="(group, idx) in suggestions"
-                :key="group.component_type.id"
-                :class="[
-                  'relative px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors',
-                  activeSuggestionTab === idx
-                    ? 'text-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                ]"
-                @click="activeSuggestionTab = idx"
-              >
-                {{ group.component_type.name }}
-                <span class="ml-1.5 px-1.5 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">
-                  {{ group.products.length }}
-                </span>
-                <div v-if="activeSuggestionTab === idx" class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500 rounded-t-full"></div>
-              </button>
-            </div>
-
-            <!-- Product grid for active tab -->
-            <div class="p-6 lg:p-8">
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <NuxtLink
-                  v-for="item in suggestions[activeSuggestionTab]?.products"
-                  :key="item.id"
-                  :to="`/${item.category?.slug || route.params.category}/${item.slug}`"
-                  class="group bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg hover:border-primary-200 transition-all duration-300"
-                >
-                  <div class="aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
-                    <img
-                      v-if="item.images?.[0]"
-                      :src="item.images[0].url"
-                      :alt="item.name"
-                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    >
-                    <span v-else class="text-4xl text-gray-300">📦</span>
-                  </div>
-                  <div class="p-3.5">
-                    <p v-if="item.brand" class="text-xs text-gray-400 mb-1 font-medium">{{ item.brand.name }}</p>
-                    <h4 class="text-sm font-semibold line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">
-                      {{ item.name }}
-                    </h4>
-                    <div class="flex items-center gap-2">
-                      <span class="text-sm font-bold text-primary-600">
-                        {{ formatPrice(item.sale_price || item.price) }}
-                      </span>
-                      <span v-if="item.sale_price" class="text-xs text-gray-400 line-through">
-                        {{ formatPrice(item.price) }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="px-3.5 pb-3">
-                    <span class="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 font-medium">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                      Tương thích
-                    </span>
-                  </div>
-                </NuxtLink>
-              </div>
-
-              <p v-if="!suggestions[activeSuggestionTab]?.products?.length" class="text-center text-gray-500 py-8">
-                Không tìm thấy sản phẩm tương thích
-              </p>
-            </div>
-          </template>
-
-          <!-- No suggestions -->
-          <div v-else class="p-8 text-center text-gray-500">
-            Chưa có dữ liệu tương thích cho sản phẩm này
-          </div>
-        </div>
 
         <!-- ===== Related Products ===== -->
         <div v-if="relatedProducts.length" class="mb-8">

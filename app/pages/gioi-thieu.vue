@@ -1,17 +1,17 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Giới thiệu - PC Shop',
-  description: 'Tìm hiểu về PC Shop - chuyên cung cấp PC, Laptop và linh kiện máy tính chính hãng.',
+  title: 'Giới thiệu - Lgtech',
+  description: 'Tìm hiểu về Lgtech - chuyên cung cấp PC, Laptop và linh kiện máy tính chính hãng.',
 })
 </script>
 
 <template>
   <div class="container mx-auto px-4 py-12 max-w-4xl">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Giới thiệu về PC Shop</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Giới thiệu về Lgtech</h1>
 
     <div class="prose prose-lg max-w-none text-gray-700 space-y-6">
       <p>
-        <strong>PC Shop</strong> là hệ thống bán lẻ PC, Laptop và linh kiện máy tính hàng đầu,
+        <strong>Lgtech</strong> là hệ thống bán lẻ PC, Laptop và linh kiện máy tính hàng đầu,
         chuyên cung cấp các sản phẩm công nghệ chính hãng với giá cạnh tranh nhất thị trường.
       </p>
 
@@ -22,7 +22,7 @@ useSeoMeta({
         kinh nghiệm, chúng tôi cam kết tư vấn và hỗ trợ khách hàng lựa chọn cấu hình phù hợp nhất.
       </p>
 
-      <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Tại sao chọn PC Shop?</h2>
+      <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Tại sao chọn Lgtech?</h2>
       <ul class="list-disc pl-6 space-y-2">
         <li>Hàng chính hãng 100%, bảo hành đầy đủ theo nhà sản xuất</li>
         <li>Đội ngũ kỹ thuật viên chuyên nghiệp, tư vấn nhiệt tình</li>

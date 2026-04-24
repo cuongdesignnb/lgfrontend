@@ -29,7 +29,7 @@ const formatDate = (date: string | null) => {
 
 // SEO
 useSeoMeta({
-  title: () => post.value?.title ? `${post.value.title} - PC Shop` : 'Bài viết - PC Shop',
+  title: () => post.value?.title ? `${post.value.title} - Lgtech` : 'Bài viết - Lgtech',
   description: () => post.value?.excerpt || post.value?.meta_description,
 })
 </script>

@@ -99,7 +99,7 @@ const getItemTotal = (item: CartItem) => {
 }
 
 useSeoMeta({
-  title: 'Giỏ hàng - PC Shop',
+  title: 'Giỏ hàng - Lgtech',
 })
 </script>
 

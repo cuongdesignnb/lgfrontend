@@ -218,8 +218,8 @@ const getDiscount = (p: Product) => {
 const showMobileFilters = ref(false)
 
 useSeoMeta({
-  title: () => category.value?.name ? `${category.value.name} - PC Shop` : 'Danh mục - PC Shop',
-  description: () => category.value?.description || `Khám phá sản phẩm ${category.value?.name} tại PC Shop`,
+  title: () => category.value?.name ? `${category.value.name} - Lgtech` : 'Danh mục - Lgtech',
+  description: () => category.value?.description || `Khám phá sản phẩm ${category.value?.name} tại Lgtech`,
 })
 </script>
 

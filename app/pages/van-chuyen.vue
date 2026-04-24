@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Chính sách vận chuyển - PC Shop',
-  description: 'Chính sách vận chuyển và giao hàng tại PC Shop - Miễn phí nội thành, giao nhanh toàn quốc.',
+  title: 'Chính sách vận chuyển - Lgtech',
+  description: 'Chính sách vận chuyển và giao hàng tại Lgtech - Miễn phí nội thành, giao nhanh toàn quốc.',
 })
 </script>
 
@@ -12,7 +12,7 @@ useSeoMeta({
     <div class="prose prose-lg max-w-none text-gray-700 space-y-6">
       <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
         <p class="text-green-800 font-medium">
-          PC Shop cung cấp dịch vụ giao hàng toàn quốc với nhiều phương thức linh hoạt.
+          Lgtech cung cấp dịch vụ giao hàng toàn quốc với nhiều phương thức linh hoạt.
           Miễn phí giao hàng nội thành TP.HCM và Hà Nội cho đơn hàng từ 500.000₫.
         </p>
       </div>
