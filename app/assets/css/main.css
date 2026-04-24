@@ -1,10 +1,49 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* ========== Theme CSS Custom Properties ========== */
+/* Defaults — overridden by admin settings via theme.ts plugin */
+:root {
+  --color-primary: #c8102e;
+  --color-primary-hover: #a50d25;
+  --color-secondary: #b8976a;
+  --color-bg: #f5f0e8;
+  --color-text: #1a1a1a;
+  --color-header-bg: #ffffff;
+  --color-footer-bg: #f5f0e8;
+}
+
 /* ========== Global Warm Theme ========== */
 body {
-  background-color: #f5f0e8;
+  background-color: var(--color-bg);
   font-family: 'Inter', sans-serif;
+  color: var(--color-text);
+}
+
+/* ========== Tailwind Color Variable Overrides ========== */
+/* These map hardcoded Tailwind arbitrary colors to CSS custom properties,
+   so changing colors in admin settings automatically applies everywhere. */
+
+/* Background overrides */
+.bg-\[\#c8102e\] { background-color: var(--color-primary) !important; }
+.bg-\[\#c8102e\]\/30 { background-color: color-mix(in srgb, var(--color-primary) 30%, transparent) !important; }
+.hover\:bg-red-700:hover { background-color: var(--color-primary-hover) !important; }
+.bg-\[\#f5f0e8\] { background-color: var(--color-bg) !important; }
+.bg-\[\#b8976a\] { background-color: var(--color-secondary) !important; }
+
+/* Text overrides */
+.text-\[\#c8102e\] { color: var(--color-primary) !important; }
+.hover\:text-\[\#c8102e\]:hover { color: var(--color-primary) !important; }
+
+/* Border overrides */
+.border-\[\#c8102e\]\/30 { border-color: color-mix(in srgb, var(--color-primary) 30%, transparent) !important; }
+.hover\:border-\[\#c8102e\]\/30:hover { border-color: color-mix(in srgb, var(--color-primary) 30%, transparent) !important; }
+.border-\[\#e0d9cd\] { border-color: color-mix(in srgb, var(--color-bg) 85%, #999) !important; }
+
+/* Collage & accent */
+.featured-collage {
+  border-color: var(--color-secondary) !important;
+  background: var(--color-secondary) !important;
 }
 
 /* ========== Main Banner Carousel Transitions ========== */
