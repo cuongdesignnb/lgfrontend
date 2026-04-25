@@ -52,7 +52,7 @@ const formatDate = (date: string | null) => {
 
 useSeoMeta({
   title: 'Blog & Tin tức - Lgtech',
-  description: 'Tin tức công nghệ, hướng dẫn build PC, review sản phẩm mới nhất',
+  description: 'Tin tức công nghệ, hướng dẫn, review sản phẩm mới nhất',
 })
 </script>
 
@@ -127,7 +127,7 @@ useSeoMeta({
           <NuxtLink 
             v-for="post in posts" 
             :key="post.id"
-            :to="`/tin-tuc/${post.slug}`"
+            :to="`/blog/${post.slug}`"
             class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
           >
             <!-- Image -->
@@ -162,14 +162,18 @@ useSeoMeta({
 
         <!-- Pagination -->
         <div v-if="meta.last_page > 1" class="flex justify-center mt-8 gap-2">
-          <UButton 
+          <button 
             v-for="page in meta.last_page" 
             :key="page"
-            :variant="page === meta.current_page ? 'solid' : 'outline'"
-            size="sm"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium',
+              page === meta.current_page 
+                ? 'bg-primary-600 text-white' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            ]"
           >
             {{ page }}
-          </UButton>
+          </button>
         </div>
       </div>
     </div>
