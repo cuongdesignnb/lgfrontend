@@ -105,7 +105,7 @@ const canSubmitReview = computed(() => {
 })
 
 const scrollToReviews = () => {
-  if (!process.client) return
+  if (!import.meta.client) return
   document.getElementById('product-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 

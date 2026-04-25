@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Default layout for the storefront
+const config = useRuntimeConfig()
 const cart = useCart()
 const auth = useAuth()
 
@@ -7,6 +8,66 @@ const auth = useAuth()
 onMounted(() => {
   cart.fetchCart()
 })
+
+// ─── AJAX Search ───────────────────────────────────────
+const searchOpen = ref(false)
+const searchQuery = ref('')
+const searchResults = ref<any[]>([])
+const searchLoading = ref(false)
+const searchTotal = ref(0)
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+function openSearch() {
+  searchOpen.value = true
+  nextTick(() => {
+    const input = document.getElementById('header-search-input')
+    input?.focus()
+  })
+}
+
+function closeSearch() {
+  searchOpen.value = false
+  searchQuery.value = ''
+  searchResults.value = []
+}
+
+watch(searchQuery, (val) => {
+  if (searchTimer) clearTimeout(searchTimer)
+  if (!val || val.trim().length < 2) {
+    searchResults.value = []
+    searchTotal.value = 0
+    return
+  }
+  searchLoading.value = true
+  searchTimer = setTimeout(async () => {
+    try {
+      const data = await $fetch<any>(`${config.public.apiBase}/products`, {
+        params: { search: val.trim(), per_page: 6 },
+      })
+      searchResults.value = data.data || []
+      searchTotal.value = data.total || 0
+    } catch (e) {
+      searchResults.value = []
+      searchTotal.value = 0
+    }
+    searchLoading.value = false
+  }, 350)
+})
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat('vi-VN').format(price) + '₫'
+}
+
+function goToProduct(item: any) {
+  const categorySlug = item.category?.slug || 'san-pham'
+  navigateTo(`/${categorySlug}/${item.slug}`)
+  closeSearch()
+}
+
+function goToSearchPage() {
+  navigateTo(`/tim-kiem?q=${encodeURIComponent(searchQuery.value)}`)
+  closeSearch()
+}
 </script>
 
 <template>
@@ -31,7 +92,10 @@ onMounted(() => {
           <!-- Right actions -->
           <div class="flex items-center gap-3">
             <!-- Search -->
-            <button class="p-2 text-gray-600 hover:text-[#c8102e] rounded-lg hover:bg-gray-50 transition-colors">
+            <button 
+              @click="openSearch"
+              class="p-2 text-gray-600 hover:text-[#c8102e] rounded-lg hover:bg-gray-50 transition-colors"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -67,6 +131,108 @@ onMounted(() => {
         </div>
       </div>
     </header>
+
+    <!-- ===== Search Overlay ===== -->
+    <Teleport to="body">
+      <Transition name="search-overlay">
+        <div v-if="searchOpen" class="fixed inset-0 z-[100]" @click.self="closeSearch">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="closeSearch"></div>
+
+          <!-- Search panel -->
+          <div class="relative max-w-2xl mx-auto mt-16 sm:mt-24 px-4">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+              <!-- Search input -->
+              <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+                <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                  id="header-search-input"
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  class="flex-1 text-base text-gray-800 placeholder-gray-400 focus:outline-none bg-transparent"
+                  @keydown.escape="closeSearch"
+                  @keydown.enter="searchQuery.trim() && goToSearchPage()"
+                >
+                <button @click="closeSearch" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Results -->
+              <div class="max-h-[60vh] overflow-y-auto">
+                <!-- Loading -->
+                <div v-if="searchLoading" class="flex items-center justify-center py-8">
+                  <svg class="animate-spin h-6 w-6 text-[#c8102e]" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                  </svg>
+                </div>
+
+                <!-- Results list -->
+                <div v-else-if="searchResults.length > 0">
+                  <button
+                    v-for="item in searchResults"
+                    :key="item.id"
+                    @click="goToProduct(item)"
+                    class="w-full flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-50 last:border-0"
+                  >
+                    <div class="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden shrink-0">
+                      <img
+                        v-if="item.images?.[0]"
+                        :src="item.images[0].url"
+                        :alt="item.name"
+                        class="w-full h-full object-cover"
+                      >
+                      <div v-else class="w-full h-full flex items-center justify-center text-gray-300 text-xl">📦</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-800 truncate">{{ item.name }}</p>
+                      <p v-if="item.category" class="text-xs text-gray-400 mt-0.5">{{ item.category.name }}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <p class="text-sm font-bold text-[#c8102e]">
+                        {{ formatPrice(item.sale_price || item.price) }}
+                      </p>
+                      <p v-if="item.sale_price" class="text-xs text-gray-400 line-through">
+                        {{ formatPrice(item.price) }}
+                      </p>
+                    </div>
+                  </button>
+
+                  <!-- View all -->
+                  <button
+                    v-if="searchTotal > 6"
+                    @click="goToSearchPage"
+                    class="w-full py-3 text-center text-sm font-medium text-[#c8102e] hover:bg-red-50 transition-colors"
+                  >
+                    Xem tất cả {{ searchTotal }} kết quả →
+                  </button>
+                </div>
+
+                <!-- No results -->
+                <div v-else-if="searchQuery.trim().length >= 2 && !searchLoading" class="py-10 text-center">
+                  <svg class="w-12 h-12 mx-auto text-gray-200 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                  <p class="text-gray-500 text-sm">Không tìm thấy sản phẩm nào</p>
+                  <p class="text-gray-400 text-xs mt-1">Thử từ khóa khác hoặc tìm theo danh mục</p>
+                </div>
+
+                <!-- Hint -->
+                <div v-else-if="!searchLoading" class="py-8 text-center">
+                  <p class="text-gray-400 text-sm">Nhập ít nhất 2 ký tự để tìm kiếm</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- Main content -->
     <main class="flex-1">
@@ -127,3 +293,11 @@ onMounted(() => {
     </footer>
   </div>
 </template>
+
+<style>
+/* Search overlay transition */
+.search-overlay-enter-active { transition: opacity 0.2s ease; }
+.search-overlay-leave-active { transition: opacity 0.15s ease; }
+.search-overlay-enter-from,
+.search-overlay-leave-to { opacity: 0; }
+</style>
