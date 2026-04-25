@@ -159,9 +159,10 @@ const submitReview = async () => {
 }
 
 // SEO
+const stripHtml = (s: string | null | undefined) => s ? s.replace(/<[^>]*>/g, '').trim() : ''
 useSeoMeta({
   title: () => product.value?.name ? `${product.value.name} - Lgtech` : 'Sản phẩm - Lgtech',
-  description: () => product.value?.short_description || product.value?.meta_description,
+  description: () => stripHtml(product.value?.short_description || product.value?.meta_description),
 })
 </script>
 

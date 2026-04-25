@@ -49,6 +49,7 @@ const router = useRouter()
 
 const slug = route.params.category as string
 const fmt = (n: number) => new Intl.NumberFormat('vi-VN').format(n)
+const stripHtml = (html: string | null | undefined) => html ? html.replace(/<[^>]*>/g, '').trim() : ''
 
 // ---- Reactive filter state ----
 const page = ref(Number(route.query.page) || 1)
@@ -490,7 +491,7 @@ useSeoMeta({
               <div class="p-4">
                 <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">{{ product.brand?.name }}</p>
                 <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>
-                <p class="text-xs text-gray-500 line-clamp-1 mb-3">{{ product.short_description }}</p>
+                <p class="text-xs text-gray-500 line-clamp-1 mb-3">{{ stripHtml(product.short_description) }}</p>
                 <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
                   <span class="text-lg font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
                   <span v-if="product.sale_price" class="text-xs text-gray-400 line-through mb-0.5">{{ fmt(product.price) }}₫</span>
@@ -518,7 +519,7 @@ useSeoMeta({
                 <div>
                   <p class="text-xs text-gray-400 mb-0.5 uppercase tracking-wide">{{ product.brand?.name }}</p>
                   <h3 class="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors line-clamp-1">{{ product.name }}</h3>
-                  <p class="text-sm text-gray-500 line-clamp-2">{{ product.short_description }}</p>
+                  <p class="text-sm text-gray-500 line-clamp-2">{{ stripHtml(product.short_description) }}</p>
                 </div>
                 <div v-if="(product.sale_price || product.price) > 0" class="flex items-center gap-3 mt-2">
                   <span class="text-xl font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
