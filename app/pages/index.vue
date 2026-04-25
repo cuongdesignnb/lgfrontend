@@ -31,7 +31,7 @@ const mainSlides = computed(() => {
   return banners.map(b => ({ image: b.image || '', link: b.metadata?.cta_link || b.link || '/san-pham', title: b.title || '' }))
 })
 
-const getDiscount = (p: Product) => { if (!p.sale_price) return 0; return Math.round((1 - p.sale_price / p.price) * 100) }
+const getDiscount = (p: Product) => { if (!p.sale_price || !p.price || p.price <= 0) return 0; const pct = Math.round((1 - p.sale_price / p.price) * 100); return pct > 0 && pct < 100 ? pct : 0 }
 
 // Featured section: tab 0 = featured, tab 1+ = root categories
 const featuredTab = ref<number>(0)

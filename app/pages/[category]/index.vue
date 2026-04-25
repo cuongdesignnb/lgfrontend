@@ -210,8 +210,9 @@ const activeFilterCount = computed(() => {
 })
 
 const getDiscount = (p: Product) => {
-  if (!p.sale_price) return 0
-  return Math.round((1 - p.sale_price / p.price) * 100)
+  if (!p.sale_price || !p.price || p.price <= 0) return 0
+  const pct = Math.round((1 - p.sale_price / p.price) * 100)
+  return pct > 0 && pct < 100 ? pct : 0
 }
 
 // Mobile filter sidebar

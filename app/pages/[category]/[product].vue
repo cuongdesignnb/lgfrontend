@@ -75,8 +75,9 @@ const addToCart = async () => {
 
 // Calculate discount percentage
 const discountPercent = computed(() => {
-  if (!product.value?.sale_price) return 0
-  return Math.round((1 - product.value.sale_price / product.value.price) * 100)
+  if (!product.value?.sale_price || !product.value?.price || product.value.price <= 0) return 0
+  const pct = Math.round((1 - product.value.sale_price / product.value.price) * 100)
+  return pct > 0 && pct < 100 ? pct : 0
 })
 
 // Average rating
