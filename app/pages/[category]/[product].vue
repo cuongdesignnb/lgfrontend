@@ -803,4 +803,29 @@ useSeoMeta({
   color: #475569;
   line-height: 1.6;
 }
+/* ── Short description list styling ── */
+:deep(.short-desc-list) {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+:deep(.short-desc-list li) {
+  position: relative;
+  padding: 0.375rem 0 0.375rem 1.25rem;
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.5;
+}
+:deep(.short-desc-list li::before) {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #c8102e;
+  font-weight: bold;
+  font-size: 1rem;
+}
+:deep(.short-desc-list li strong) {
+  color: #1e293b;
+  font-weight: 600;
+}
 </style>

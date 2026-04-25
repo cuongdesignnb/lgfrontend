@@ -47,8 +47,8 @@ const featuredGridProducts = computed((): Product[] => {
   if (featuredTab.value === 0) {
     // Show featured products from API
     if (featuredProducts.value && featuredProducts.value.length > 0) return featuredProducts.value.slice(0, 8)
-    // Fallback: collect featured from all sections
-    const all = (sections.value ?? []).flatMap(s => s.products).filter(p => p.is_featured)
+    // Fallback: collect from all sections (not just is_featured)
+    const all = (sections.value ?? []).flatMap(s => s.products)
     return all.slice(0, 8)
   }
   // Show products from the selected category section
@@ -127,10 +127,10 @@ function resetMainTimer() { if (mainSlideTimer) clearInterval(mainSlideTimer); m
 onMounted(() => { resetMainTimer() })
 onUnmounted(() => { if (mainSlideTimer) clearInterval(mainSlideTimer) })
 
-// Collage images from featured products
+// Collage images from active tab products
 const collageImages = computed(() => {
-  const pool = featuredProducts.value?.length ? featuredProducts.value : (sections.value ?? []).flatMap(s => s.products)
-  return pool.filter(p => p.images?.[0]).slice(0, 4).map(p => ({ url: p.images![0]!.url, name: p.name }))
+  const products = featuredGridProducts.value
+  return products.filter(p => p.images?.[0]).slice(0, 4).map(p => ({ url: p.images![0]!.url, name: p.name, slug: productLink(p) }))
 })
 
 // Featured category list for the collage panel
@@ -198,87 +198,72 @@ onMounted(() => {
     <section class="bg-[#f5f0e8] pb-10">
       <div class="container mx-auto px-4">
         <!-- Section Title + Category Tabs -->
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Khám phá sản phẩm nổi bật</h2>
-            <div class="flex items-center gap-4 mt-2 flex-wrap">
-              <button v-for="(tab, ti) in featuredTabs" :key="ti" @click="featuredTab = ti"
-                :class="['text-sm font-medium pb-1 border-b-2 transition-colors',
-                  featuredTab === ti ? 'text-gray-900 border-gray-900' : 'text-gray-500 border-transparent hover:text-gray-700']">
-                {{ tab.label }}
-              </button>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <div class="mb-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Khám phá sản phẩm nổi bật</h2>
+          <div class="flex items-center gap-1 flex-wrap overflow-x-auto scrollbar-hide">
+            <button v-for="(tab, ti) in featuredTabs" :key="ti" @click="featuredTab = ti"
+              :class="['px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap',
+                featuredTab === ti
+                  ? 'bg-[#c8102e] text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200']">
+              {{ tab.label }}
             </button>
           </div>
         </div>
 
-        <!-- Collage: Left Info + Right Images -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div class="bg-white rounded-2xl p-8 flex flex-col justify-between">
+        <!-- Collage: Left Info + Right Product Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left info panel -->
+          <div class="lg:col-span-3 bg-white rounded-2xl p-6 flex flex-col justify-between">
             <div>
-              <div class="flex items-center gap-2 mb-6">
-                <div class="w-12 h-12 rounded-lg bg-[#c8102e] flex items-center justify-center text-white font-black text-sm">LG</div>
+              <div class="flex items-center gap-2 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-[#c8102e] flex items-center justify-center text-white font-black text-xs">LG</div>
                 <div class="leading-tight">
-                  <span class="text-[10px] font-bold text-[#c8102e] uppercase tracking-wider">Technology</span><br/>
-                  <span class="text-[10px] font-bold text-[#c8102e] uppercase tracking-wider">For Life</span>
+                  <span class="text-[9px] font-bold text-[#c8102e] uppercase tracking-wider">Technology</span><br/>
+                  <span class="text-[9px] font-bold text-[#c8102e] uppercase tracking-wider">For Life</span>
                 </div>
               </div>
-              <h3 class="text-[#c8102e] text-xl font-bold uppercase mb-1">Khám Phá</h3>
-              <h3 class="text-[#c8102e] text-xl font-bold uppercase mb-2">Dòng Sản Phẩm</h3>
-              <h2 class="text-5xl md:text-6xl font-black text-[#c8102e] mb-6 leading-tight" style="font-family: serif;">NỔI BẬT</h2>
-              <NuxtLink to="/san-pham" class="inline-block border-2 border-gray-800 text-gray-800 text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition-colors mb-8">
+              <h3 class="text-[#c8102e] text-lg font-bold uppercase mb-1">Khám Phá</h3>
+              <h3 class="text-[#c8102e] text-lg font-bold uppercase mb-1">Dòng Sản Phẩm</h3>
+              <h2 class="text-4xl md:text-5xl font-black text-[#c8102e] mb-4 leading-tight" style="font-family: serif;">NỔI BẬT</h2>
+              <NuxtLink :to="featuredGridLink" class="inline-block border-2 border-gray-800 text-gray-800 text-xs font-semibold px-5 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition-colors mb-6">
                 Mua ngay
               </NuxtLink>
             </div>
-            <ul class="space-y-2">
-              <li v-for="cat in featuredCats" :key="cat" class="flex items-center gap-2 text-[#c8102e] font-medium text-sm">
-                <span class="w-2 h-2 rounded-full bg-[#c8102e]"></span>
+            <ul class="space-y-1.5">
+              <li v-for="cat in featuredCats" :key="cat" class="flex items-center gap-2 text-[#c8102e] font-medium text-xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c8102e]"></span>
                 {{ cat }}
               </li>
             </ul>
           </div>
-          <div class="featured-collage" style="min-height: 400px;">
-            <template v-if="collageImages.length >= 4">
-              <img v-for="(img, i) in collageImages.slice(0, 4)" :key="i" :src="img.url" :alt="img.name" />
-            </template>
-            <template v-else>
-              <div v-for="i in 4" :key="i" class="bg-[#e8e2d8] rounded-lg flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Sản phẩm</span>
-              </div>
-            </template>
-          </div>
-        </div>
 
-        <!-- Product Grid - Featured/Category products -->
-        <div v-if="featuredGridProducts.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <NuxtLink v-for="product in featuredGridProducts" :key="product.id"
-            :to="productLink(product)" :prefetch="false" data-product-card
-            class="card-hover bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-[#c8102e]/30 transition-all group">
-            <div class="relative aspect-square bg-[#f0ebe3] flex items-center justify-center overflow-hidden">
-              <img v-if="product.images?.[0]" :src="product.images[0].url" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              <div v-else class="w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-bold text-white bg-[#c8102e]">{{ product.name.charAt(0) }}</div>
-              <div v-if="getDiscount(product)" class="absolute top-2 left-2 bg-[#c8102e] text-white text-xs font-bold px-2 py-1 rounded-lg">-{{ getDiscount(product) }}%</div>
-              <div v-if="product.is_featured" class="absolute top-2 right-2 bg-amber-400 text-gray-900 text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</div>
+          <!-- Right product grid (responds to tab) -->
+          <div class="lg:col-span-9">
+            <div v-if="featuredGridProducts.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <NuxtLink v-for="product in featuredGridProducts" :key="product.id"
+                :to="productLink(product)" :prefetch="false" data-product-card
+                class="card-hover bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-[#c8102e]/30 transition-all group">
+                <div class="relative aspect-square bg-[#f0ebe3] flex items-center justify-center overflow-hidden">
+                  <img v-if="product.images?.[0]" :src="product.images[0].url" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div v-else class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white bg-[#c8102e]">{{ product.name.charAt(0) }}</div>
+                  <div v-if="getDiscount(product)" class="absolute top-2 left-2 bg-[#c8102e] text-white text-xs font-bold px-2 py-1 rounded-lg">-{{ getDiscount(product) }}%</div>
+                  <div v-if="product.is_featured" class="absolute top-2 right-2 bg-amber-400 text-gray-900 text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</div>
+                </div>
+                <div class="p-3">
+                  <h3 class="font-semibold text-xs text-gray-900 line-clamp-2 mb-1.5 group-hover:text-[#c8102e] transition-colors">{{ product.name }}</h3>
+                  <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-1.5">
+                    <span class="text-sm font-bold text-[#c8102e]">{{ fmt(product.sale_price || product.price) }}₫</span>
+                    <span v-if="product.sale_price" class="text-[10px] text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
+                  </div>
+                  <span v-else class="text-sm font-bold text-amber-600">Liên hệ</span>
+                </div>
+              </NuxtLink>
             </div>
-            <div class="p-4">
-              <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ product.name }}</h3>
-              <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
-                <span class="text-base font-bold text-[#c8102e]">{{ fmt(product.sale_price || product.price) }}₫</span>
-                <span v-if="product.sale_price" class="text-xs text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
-              </div>
-              <span v-else class="text-base font-bold text-amber-600">Liên hệ</span>
+            <div v-else class="flex items-center justify-center h-full min-h-[300px] bg-white rounded-xl text-gray-400">
+              <p>Chưa có sản phẩm nào.</p>
             </div>
-          </NuxtLink>
-        </div>
-        <div v-else class="text-center py-12 text-gray-400">
-          <p>Chưa có sản phẩm nào.</p>
+          </div>
         </div>
 
         <!-- View All Button -->
