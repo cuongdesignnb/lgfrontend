@@ -284,7 +284,7 @@ useSeoMeta({
 
               <!-- Price section -->
               <div class="bg-gradient-to-r from-primary-50/80 to-orange-50/50 rounded-xl p-5 my-5">
-                <div class="flex items-end gap-3">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-3">
                   <span class="text-3xl lg:text-4xl font-extrabold text-primary-600">
                     {{ formatPrice(product.sale_price || product.price) }}
                   </span>
@@ -296,12 +296,14 @@ useSeoMeta({
                     {{ discountPercent }}%
                   </span>
                 </div>
+                <div v-else class="flex items-center gap-3">
+                  <span class="text-2xl lg:text-3xl font-extrabold text-amber-600">Liên hệ</span>
+                  <span class="text-sm text-gray-500">Vui lòng liên hệ để được báo giá tốt nhất</span>
+                </div>
               </div>
 
               <!-- Short description -->
-              <p v-if="product.short_description" class="text-gray-600 text-[15px] leading-relaxed mb-5">
-                {{ product.short_description }}
-              </p>
+              <div v-if="product.short_description" class="text-gray-600 text-[15px] leading-relaxed mb-5 prose prose-sm prose-gray max-w-none" v-html="product.short_description"></div>
 
               <!-- Stock status -->
               <div class="mb-5">
@@ -318,8 +320,8 @@ useSeoMeta({
                 </div>
               </div>
 
-              <!-- Quantity & Add to cart -->
-              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+              <!-- Quantity & Add to cart (only if price > 0 and in stock) -->
+              <div v-if="(product.sale_price || product.price) > 0 && product.quantity > 0" class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
                 <div class="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden">
                   <button 
                     class="px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors disabled:opacity-30"
@@ -345,13 +347,13 @@ useSeoMeta({
                 </div>
 
                 <button
-                  :disabled="product.quantity === 0 || addingToCart"
+                  :disabled="addingToCart"
                   :class="[
                     'flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl font-semibold text-white transition-all duration-300 shadow-lg',
                     addedToCart 
                       ? 'bg-emerald-500 shadow-emerald-200'
                       : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-primary-200 hover:shadow-primary-300 hover:shadow-xl active:scale-[0.98]',
-                    (product.quantity === 0 || addingToCart) && 'opacity-50 cursor-not-allowed !shadow-none'
+                    addingToCart && 'opacity-50 cursor-not-allowed !shadow-none'
                   ]"
                   @click="addToCart"
                 >
@@ -363,6 +365,16 @@ useSeoMeta({
                   <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
                   <span>{{ addedToCart ? 'Đã thêm!' : 'Thêm vào giỏ hàng' }}</span>
                 </button>
+              </div>
+              <!-- Contact button when price = 0 or out of stock -->
+              <div v-else class="mb-6">
+                <a
+                  href="tel:0123456789"
+                  class="flex items-center justify-center gap-2.5 w-full px-8 py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  <span>Liên hệ tư vấn</span>
+                </a>
               </div>
 
               <!-- Trust badges -->
@@ -698,12 +710,15 @@ useSeoMeta({
               </div>
               <div class="p-4">
                 <h3 class="font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">{{ related.name }}</h3>
-                <p class="text-lg font-bold text-primary-600">
-                  {{ formatPrice(related.sale_price || related.price) }}
-                </p>
-                <p v-if="related.sale_price" class="text-sm text-gray-400 line-through">
-                  {{ formatPrice(related.price) }}
-                </p>
+                <template v-if="(related.sale_price || related.price) > 0">
+                  <p class="text-lg font-bold text-primary-600">
+                    {{ formatPrice(related.sale_price || related.price) }}
+                  </p>
+                  <p v-if="related.sale_price" class="text-sm text-gray-400 line-through">
+                    {{ formatPrice(related.price) }}
+                  </p>
+                </template>
+                <p v-else class="text-lg font-bold text-amber-600">Liên hệ</p>
               </div>
             </NuxtLink>
           </div>

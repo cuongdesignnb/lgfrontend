@@ -490,10 +490,11 @@ useSeoMeta({
                 <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">{{ product.brand?.name }}</p>
                 <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>
                 <p class="text-xs text-gray-500 line-clamp-1 mb-3">{{ product.short_description }}</p>
-                <div class="flex items-end gap-2">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
                   <span class="text-lg font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
                   <span v-if="product.sale_price" class="text-xs text-gray-400 line-through mb-0.5">{{ fmt(product.price) }}₫</span>
                 </div>
+                <span v-else class="text-lg font-bold text-amber-600">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>
@@ -518,13 +519,14 @@ useSeoMeta({
                   <h3 class="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors line-clamp-1">{{ product.name }}</h3>
                   <p class="text-sm text-gray-500 line-clamp-2">{{ product.short_description }}</p>
                 </div>
-                <div class="flex items-center gap-3 mt-2">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-center gap-3 mt-2">
                   <span class="text-xl font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
                   <span v-if="product.sale_price" class="text-sm text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
                   <span v-if="getDiscount(product)" class="bg-red-50 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
                     -{{ getDiscount(product) }}%
                   </span>
                 </div>
+                <span v-else class="text-xl font-bold text-amber-600 mt-2">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>

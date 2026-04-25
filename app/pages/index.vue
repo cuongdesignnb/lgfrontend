@@ -269,10 +269,11 @@ onMounted(() => {
             </div>
             <div class="p-4">
               <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ product.name }}</h3>
-              <div class="flex items-end gap-2">
+              <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
                 <span class="text-base font-bold text-[#c8102e]">{{ fmt(product.sale_price || product.price) }}₫</span>
                 <span v-if="product.sale_price" class="text-xs text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
               </div>
+              <span v-else class="text-base font-bold text-amber-600">Liên hệ</span>
             </div>
           </NuxtLink>
         </div>
@@ -326,10 +327,11 @@ onMounted(() => {
               </div>
               <div class="p-4">
                 <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ product.name }}</h3>
-                <div class="flex items-end gap-2">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
                   <span class="text-base font-bold text-[#c8102e]">{{ fmt(product.sale_price || product.price) }}₫</span>
                   <span v-if="product.sale_price" class="text-xs text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
                 </div>
+                <span v-else class="text-base font-bold text-amber-600">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>
