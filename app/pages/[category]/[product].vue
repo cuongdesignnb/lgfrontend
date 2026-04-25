@@ -421,10 +421,10 @@ useSeoMeta({
           </div>
         </div>
 
-        <!-- ===== MÔ TẢ (trái) + THÔNG SỐ (phải) - NẰM NGANG FLEX ===== -->
-        <div class="flex flex-col lg:flex-row gap-6 mb-8">
+        <!-- ===== MÔ TẢ (trái) + THÔNG SỐ (phải) - GRID LAYOUT ===== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
           <!-- Mô tả chi tiết — bên trái -->
-          <div class="flex-1 min-w-0">
+          <div class="lg:col-span-7 min-w-0 overflow-hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
               <!-- Header -->
               <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-primary-50/60 to-transparent">
@@ -435,7 +435,7 @@ useSeoMeta({
               </div>
               <!-- Content -->
               <div class="p-6">
-                <div v-if="product.description" class="prose prose-sm prose-gray max-w-none prose-headings:text-gray-800 prose-headings:font-bold prose-a:text-primary-600 prose-a:font-semibold prose-img:rounded-xl prose-p:leading-relaxed prose-p:text-gray-600" v-html="product.description"></div>
+                <div v-if="product.description" class="prose prose-sm prose-gray max-w-none prose-headings:text-gray-800 prose-headings:font-bold prose-a:text-primary-600 prose-a:font-semibold prose-img:rounded-xl prose-p:leading-relaxed prose-p:text-gray-600 break-words overflow-hidden" v-html="product.description"></div>
                 <div v-else class="text-center py-16 text-gray-400">
                   <svg class="w-14 h-14 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h12"/></svg>
                   <p class="text-sm">Chưa có mô tả chi tiết</p>
@@ -445,7 +445,7 @@ useSeoMeta({
           </div>
 
           <!-- Thông số kỹ thuật — bên phải (sticky) -->
-          <div class="w-full lg:w-[420px] xl:w-[460px] flex-shrink-0">
+          <div class="lg:col-span-5 min-w-0 overflow-hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:sticky lg:top-4">
               <!-- Header -->
               <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50/70 to-transparent">
@@ -755,6 +755,22 @@ useSeoMeta({
 }
 :deep(.prose h3:first-child) {
   margin-top: 0;
+}
+/* Prevent content overflow */
+:deep(.prose) {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+:deep(.prose img) {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+:deep(.prose table) {
+  width: 100%;
+  table-layout: fixed;
+  overflow-x: auto;
 }
 :deep(.prose p) {
   color: #475569;
