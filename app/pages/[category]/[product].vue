@@ -805,9 +805,9 @@ useSeoMeta({
 }
 /* ── Short description list styling ── */
 :deep(.short-desc-list) {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 :deep(.short-desc-list li) {
   position: relative;
@@ -815,14 +815,20 @@ useSeoMeta({
   font-size: 0.875rem;
   color: #374151;
   line-height: 1.5;
+  list-style: none !important;
 }
 :deep(.short-desc-list li::before) {
   content: '•';
   position: absolute;
   left: 0;
+  top: 0.375rem;
   color: #c8102e;
   font-weight: bold;
   font-size: 1rem;
+}
+:deep(.short-desc-list li::marker) {
+  content: none;
+  display: none;
 }
 :deep(.short-desc-list li strong) {
   color: #1e293b;
