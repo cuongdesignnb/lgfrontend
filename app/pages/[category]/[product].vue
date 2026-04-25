@@ -741,3 +741,66 @@ useSeoMeta({
     </div>
   </div>
 </template>
+
+<style scoped>
+/* ── Product description prose styling ── */
+:deep(.prose h3) {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+:deep(.prose h3:first-child) {
+  margin-top: 0;
+}
+:deep(.prose p) {
+  color: #475569;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+:deep(.prose img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+:deep(.prose ul.woo-specs) {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+:deep(.prose ul.woo-specs li) {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
+}
+:deep(.prose ul.woo-specs li:last-child) {
+  border-bottom: none;
+}
+:deep(.prose ul.woo-specs li:nth-child(even)) {
+  background: #f1f5f9;
+}
+:deep(.prose ul.woo-specs li strong) {
+  color: #1e293b;
+  font-weight: 600;
+}
+/* Generic unordered lists */
+:deep(.prose ul:not(.woo-specs)) {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0.75rem 0;
+}
+:deep(.prose ul:not(.woo-specs) li) {
+  padding: 0.25rem 0;
+  color: #475569;
+  line-height: 1.6;
+}
+</style>
