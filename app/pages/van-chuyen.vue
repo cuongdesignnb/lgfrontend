@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { contactHotline, contactPhone } = useSiteSettings()
 useSeoMeta({
   title: 'Chính sách vận chuyển - Lgtech',
   description: 'Chính sách vận chuyển và giao hàng tại Lgtech - Miễn phí nội thành, giao nhanh toàn quốc.',
@@ -46,7 +47,7 @@ useSeoMeta({
       <ul class="list-disc pl-6 space-y-2">
         <li>Kiểm tra tình trạng bên ngoài kiện hàng trước khi nhận</li>
         <li>Quay video khi mở hộp để đảm bảo quyền lợi</li>
-        <li>Liên hệ ngay Hotline 1900 xxxx nếu phát hiện sai / thiếu sản phẩm</li>
+        <li>Liên hệ ngay Hotline {{ contactHotline || contactPhone || '' }} nếu phát hiện sai / thiếu sản phẩm</li>
         <li>Thời gian khiếu nại: trong vòng 24 giờ kể từ khi nhận hàng</li>
       </ul>
 

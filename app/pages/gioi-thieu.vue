@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { contactPhone, contactHotline, contactEmail, contactAddress } = useSiteSettings()
 useSeoMeta({
   title: 'Giới thiệu - Lgtech',
   description: 'Tìm hiểu về Lgtech - chuyên cung cấp PC, Laptop và linh kiện máy tính chính hãng.',
@@ -34,9 +35,9 @@ useSeoMeta({
 
       <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Thông tin liên hệ</h2>
       <div class="bg-gray-50 rounded-xl p-6 space-y-2">
-        <p><strong>Địa chỉ:</strong> 123 Nguyễn Văn Linh, Quận 7, TP.HCM</p>
-        <p><strong>Hotline:</strong> 1900 xxxx</p>
-        <p><strong>Email:</strong> info@pcshop.vn</p>
+        <p><strong>Địa chỉ:</strong> {{ contactAddress || 'Chưa cập nhật' }}</p>
+        <p><strong>Hotline:</strong> {{ contactHotline || contactPhone || 'Chưa cập nhật' }}</p>
+        <p><strong>Email:</strong> {{ contactEmail || 'Chưa cập nhật' }}</p>
         <p><strong>Giờ làm việc:</strong> 8:00 – 21:00 (Thứ 2 – Chủ nhật)</p>
       </div>
     </div>

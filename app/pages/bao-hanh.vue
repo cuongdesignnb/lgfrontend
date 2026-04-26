@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { contactHotline, contactPhone } = useSiteSettings()
 useSeoMeta({
   title: 'Chính sách bảo hành - Lgtech',
   description: 'Chính sách bảo hành sản phẩm tại Lgtech - Cam kết bảo hành chính hãng, đổi trả minh bạch.',
@@ -58,7 +59,7 @@ useSeoMeta({
         <div class="bg-gray-50 rounded-xl p-5 text-center">
           <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">1</div>
           <p class="font-medium text-gray-900 mb-1">Liên hệ</p>
-          <p class="text-sm text-gray-500">Hotline 1900 xxxx hoặc mang sản phẩm đến cửa hàng</p>
+          <p class="text-sm text-gray-500">Hotline {{ contactHotline || contactPhone || '' }} hoặc mang sản phẩm đến cửa hàng</p>
         </div>
         <div class="bg-gray-50 rounded-xl p-5 text-center">
           <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">2</div>

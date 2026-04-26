@@ -3,6 +3,7 @@
 const config = useRuntimeConfig()
 const cart = useCart()
 const auth = useAuth()
+const route = useRoute()
 
 // Fetch cart on mount
 onMounted(() => {
@@ -68,6 +69,9 @@ function goToSearchPage() {
   navigateTo(`/tim-kiem?q=${encodeURIComponent(searchQuery.value)}`)
   closeSearch()
 }
+
+// ─── Site Settings (dynamic phone, email, etc.) ────────
+const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } = useSiteSettings()
 </script>
 
 <template>
@@ -235,9 +239,77 @@ function goToSearchPage() {
     </Teleport>
 
     <!-- Main content -->
-    <main class="flex-1">
+    <main class="flex-1 pb-[70px] lg:pb-0">
       <slot />
     </main>
+
+    <!-- ===== Mobile Bottom Tab Bar ===== -->
+    <nav id="mobile-tab-bar" class="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-tab-bar">
+      <div class="flex items-stretch justify-around h-[62px] px-1">
+        <!-- Trang chủ -->
+        <NuxtLink
+          to="/"
+          :class="[
+            'mobile-tab-item',
+            route.path === '/' ? 'mobile-tab-active' : ''
+          ]"
+        >
+          <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span>Trang chủ</span>
+        </NuxtLink>
+
+        <!-- Sản phẩm -->
+        <NuxtLink
+          to="/products"
+          :class="[
+            'mobile-tab-item',
+            route.path.startsWith('/products') || route.path.startsWith('/categories') ? 'mobile-tab-active' : ''
+          ]"
+        >
+          <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          </svg>
+          <span>Sản phẩm</span>
+        </NuxtLink>
+
+        <!-- Giỏ hàng -->
+        <NuxtLink
+          to="/gio-hang"
+          :class="[
+            'mobile-tab-item',
+            route.path.startsWith('/gio-hang') ? 'mobile-tab-active' : ''
+          ]"
+        >
+          <div class="relative">
+            <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+            </svg>
+            <span
+              v-if="cart.itemCount.value > 0"
+              class="absolute -top-1.5 -right-2.5 min-w-[18px] h-[18px] bg-[#c8102e] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 ring-2 ring-white"
+            >
+              {{ cart.itemCount.value > 99 ? '99+' : cart.itemCount.value }}
+            </span>
+          </div>
+          <span>Giỏ hàng</span>
+        </NuxtLink>
+
+        <!-- Gọi điện (thay Đăng nhập) -->
+        <a
+          :href="`tel:${contactHotline || contactPhone}`"
+          class="mobile-tab-item mobile-tab-call"
+        >
+          <div class="mobile-tab-call-icon">
+            <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+          </div>
+          <span>Gọi điện</span>
+        </a>
+      </div>
+    </nav>
 
     <!-- Footer -->
     <footer class="bg-[#ece7df] text-gray-800 border-t border-[#d9d3c7]">
@@ -259,9 +331,14 @@ function goToSearchPage() {
           <div>
             <h3 class="text-lg font-bold mb-4">Liên hệ với chúng tôi</h3>
             <ul class="space-y-2 text-sm text-gray-600">
-              <li>Địa chỉ: Khu Đô Thị Ao Sào, Hoàng Mai, Hà Nội. <a href="#" class="text-blue-600 hover:underline">(Bản đồ đường đi)</a></li>
-              <li>Hotline: <a href="tel:0987113911" class="text-blue-600 hover:underline">0987113911</a> - <a href="tel:0982557272" class="text-blue-600 hover:underline">0982557272</a></li>
-              <li>Email: <a href="mailto:admin@lgtech.vn" class="text-blue-600 hover:underline">admin@lgtech.vn</a></li>
+              <li v-if="contactAddress">Địa chỉ: {{ contactAddress }}</li>
+              <li v-if="contactHotline || contactPhone">
+                Hotline:
+                <a v-if="contactHotline" :href="`tel:${contactHotline}`" class="text-blue-600 hover:underline">{{ contactHotline }}</a>
+                <template v-if="contactHotline && contactPhone"> - </template>
+                <a v-if="contactPhone" :href="`tel:${contactPhone}`" class="text-blue-600 hover:underline">{{ contactPhone }}</a>
+              </li>
+              <li v-if="contactEmail">Email: <a :href="`mailto:${contactEmail}`" class="text-blue-600 hover:underline">{{ contactEmail }}</a></li>
             </ul>
             <h4 class="text-base font-bold mt-4 mb-2">Kết nối với chúng tôi</h4>
             <div class="flex gap-3">
@@ -300,4 +377,81 @@ function goToSearchPage() {
 .search-overlay-leave-active { transition: opacity 0.15s ease; }
 .search-overlay-enter-from,
 .search-overlay-leave-to { opacity: 0; }
+
+/* ===== Mobile Bottom Tab Bar ===== */
+.mobile-tab-bar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  padding: 6px 2px;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.15s ease;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-tab-item:active {
+  transform: scale(0.92);
+}
+
+.mobile-tab-active {
+  color: var(--color-primary, #c8102e);
+}
+
+.mobile-tab-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  border-radius: 0 0 6px 6px;
+  background: var(--color-primary, #c8102e);
+}
+
+/* Call button special styling */
+.mobile-tab-call {
+  color: #059669;
+}
+
+.mobile-tab-call-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+  animation: callPulse 2.5s ease-in-out infinite;
+  margin-top: -10px;
+}
+
+@keyframes callPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35); }
+  50% { box-shadow: 0 4px 20px rgba(5, 150, 105, 0.55); }
+}
+
+.mobile-tab-call span {
+  color: #059669;
+  font-weight: 700;
+}
 </style>

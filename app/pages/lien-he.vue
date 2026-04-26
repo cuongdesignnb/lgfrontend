@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { contactPhone, contactHotline, contactEmail, contactAddress } = useSiteSettings()
 useSeoMeta({
   title: 'Liên hệ - Lgtech',
   description: 'Liên hệ Lgtech - Hỗ trợ mua hàng, tư vấn kỹ thuật, bảo hành.',
@@ -21,7 +22,7 @@ useSeoMeta({
               </div>
               <div>
                 <p class="font-medium text-gray-900">Địa chỉ</p>
-                <p class="text-gray-600">123 Nguyễn Văn Linh, Quận 7, TP.HCM</p>
+                <p class="text-gray-600">{{ contactAddress || 'Chưa cập nhật' }}</p>
               </div>
             </div>
             <div class="flex items-start gap-3">
@@ -30,7 +31,11 @@ useSeoMeta({
               </div>
               <div>
                 <p class="font-medium text-gray-900">Hotline</p>
-                <p class="text-gray-600">1900 xxxx (8:00 – 21:00)</p>
+                <p class="text-gray-600">
+                  <a v-if="contactHotline" :href="`tel:${contactHotline}`" class="hover:underline">{{ contactHotline }}</a>
+                  <template v-if="contactHotline && contactPhone"> - </template>
+                  <a v-if="contactPhone" :href="`tel:${contactPhone}`" class="hover:underline">{{ contactPhone }}</a>
+                </p>
               </div>
             </div>
             <div class="flex items-start gap-3">
@@ -39,7 +44,7 @@ useSeoMeta({
               </div>
               <div>
                 <p class="font-medium text-gray-900">Email</p>
-                <p class="text-gray-600">info@pcshop.vn</p>
+                <p class="text-gray-600">{{ contactEmail || 'Chưa cập nhật' }}</p>
               </div>
             </div>
           </div>

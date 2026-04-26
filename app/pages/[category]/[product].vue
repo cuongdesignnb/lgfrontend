@@ -9,6 +9,7 @@ interface ProductDetailResponse {
 const config = useRuntimeConfig()
 const route = useRoute()
 const { user, isAuthenticated, token } = useAuth()
+const { contactPhone, contactHotline } = useSiteSettings()
 
 const slug = route.params.product as string
 
@@ -168,29 +169,29 @@ useSeoMeta({
 
 <template>
   <div class="min-h-screen bg-gray-50/60">
-    <div class="container mx-auto px-4 py-6 lg:py-10 max-w-7xl">
+    <div class="container mx-auto px-3 sm:px-4 py-4 lg:py-10 max-w-7xl">
       <template v-if="product">
         <!-- Breadcrumb -->
-        <nav class="mb-8 flex items-center gap-2 text-sm text-gray-500">
-          <NuxtLink to="/" class="hover:text-primary-600 transition-colors flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <nav class="mb-4 lg:mb-8 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 overflow-x-auto whitespace-nowrap scrollbar-hide pb-1">
+          <NuxtLink to="/" class="hover:text-primary-600 transition-colors flex items-center gap-1 shrink-0">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             Trang chủ
           </NuxtLink>
-          <svg class="w-3.5 h-3.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-          <NuxtLink to="/products" class="hover:text-primary-600 transition-colors">Sản phẩm</NuxtLink>
+          <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+          <NuxtLink to="/products" class="hover:text-primary-600 transition-colors shrink-0">Sản phẩm</NuxtLink>
           <template v-if="product.category">
-            <svg class="w-3.5 h-3.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-            <NuxtLink :to="`/${product.category.slug}`" class="hover:text-primary-600 transition-colors">
+            <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            <NuxtLink :to="`/${product.category.slug}`" class="hover:text-primary-600 transition-colors shrink-0">
               {{ product.category.name }}
             </NuxtLink>
           </template>
-          <svg class="w-3.5 h-3.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-          <span class="text-gray-800 font-medium truncate max-w-xs">{{ product.name }}</span>
+          <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+          <span class="text-gray-800 font-medium truncate max-w-[180px] sm:max-w-xs">{{ product.name }}</span>
         </nav>
 
         <!-- ===== MAIN: Image + Info ===== -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 lg:p-8 mb-8">
-          <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-6 lg:p-8 mb-4 sm:mb-8">
+          <div class="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12">
             <!-- Images -->
             <div class="space-y-4">
               <!-- Main image -->
@@ -226,12 +227,12 @@ useSeoMeta({
               </div>
               
               <!-- Thumbnails -->
-              <div v-if="(product.images?.length ?? 0) > 1" class="flex gap-3 justify-center">
+              <div v-if="(product.images?.length ?? 0) > 1" class="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-1 justify-start sm:justify-center">
                 <button 
                   v-for="(img, idx) in product.images" 
                   :key="img.id"
                   :class="[
-                    'w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 hover:shadow-md',
+                    'w-14 h-14 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all duration-200 hover:shadow-md shrink-0',
                     selectedImage === idx 
                       ? 'border-primary-500 ring-2 ring-primary-200 shadow-md' 
                       : 'border-gray-200 hover:border-primary-300'
@@ -254,14 +255,14 @@ useSeoMeta({
               </div>
               
               <!-- Name -->
-              <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-4">{{ product.name }}</h1>
+              <h1 class="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4">{{ product.name }}</h1>
 
               <!-- Rating + Reviews count -->
-              <div class="flex items-center gap-3 mb-5">
-                <div class="flex items-center gap-1">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+                <div class="flex items-center gap-0.5">
                   <template v-for="i in 5" :key="i">
                     <svg 
-                      class="w-5 h-5" 
+                      class="w-4 h-4 sm:w-5 sm:h-5" 
                       :class="i <= Math.round(Number(averageRating)) ? 'text-amber-400' : 'text-gray-200'"
                       fill="currentColor" viewBox="0 0 20 20"
                     >
@@ -269,38 +270,38 @@ useSeoMeta({
                     </svg>
                   </template>
                 </div>
-                <span v-if="Number(averageRating) > 0" class="text-sm font-semibold text-gray-700">{{ averageRating }}</span>
-                <span class="text-sm text-gray-400">|</span>
+                <span v-if="Number(averageRating) > 0" class="text-xs sm:text-sm font-semibold text-gray-700">{{ averageRating }}</span>
+                <span class="text-xs sm:text-sm text-gray-400">|</span>
                 <button 
                   @click="scrollToReviews"
-                  class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                  class="text-xs sm:text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
                 >
                   {{ product.reviews?.length || 0 }} đánh giá
                 </button>
-                <span class="text-sm text-gray-400">|</span>
-                <span class="text-sm text-gray-500">SKU: {{ product.sku }}</span>
+                <span class="text-xs sm:text-sm text-gray-400">|</span>
+                <span class="text-xs sm:text-sm text-gray-500">SKU: {{ product.sku }}</span>
               </div>
 
               <!-- Divider -->
               <div class="border-t border-gray-100 my-1"></div>
 
               <!-- Price section -->
-              <div class="bg-gradient-to-r from-primary-50/80 to-orange-50/50 rounded-xl p-5 my-5">
-                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-3">
-                  <span class="text-3xl lg:text-4xl font-extrabold text-primary-600">
+              <div class="bg-gradient-to-r from-primary-50/80 to-orange-50/50 rounded-lg sm:rounded-xl p-3 sm:p-5 my-3 sm:my-5">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex flex-wrap items-end gap-2 sm:gap-3">
+                  <span class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary-600">
                     {{ formatPrice(product.sale_price || product.price) }}
                   </span>
-                  <span v-if="product.sale_price" class="text-lg text-gray-400 line-through mb-0.5">
+                  <span v-if="product.sale_price" class="text-sm sm:text-lg text-gray-400 line-through mb-0.5">
                     {{ formatPrice(product.price) }}
                   </span>
-                  <span v-if="product.sale_price" class="mb-1 inline-flex items-center gap-1 px-2.5 py-0.5 bg-red-500 text-white text-xs font-bold rounded-md">
+                  <span v-if="product.sale_price" class="mb-1 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] sm:text-xs font-bold rounded-md">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
                     {{ discountPercent }}%
                   </span>
                 </div>
-                <div v-else class="flex items-center gap-3">
-                  <span class="text-2xl lg:text-3xl font-extrabold text-amber-600">Liên hệ</span>
-                  <span class="text-sm text-gray-500">Vui lòng liên hệ để được báo giá tốt nhất</span>
+                <div v-else class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                  <span class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-600">Liên hệ</span>
+                  <span class="text-xs sm:text-sm text-gray-500">Vui lòng liên hệ để được báo giá tốt nhất</span>
                 </div>
               </div>
 
@@ -371,8 +372,8 @@ useSeoMeta({
               <!-- Contact button when price = 0 or out of stock -->
               <div v-else class="mb-6">
                 <a
-                  href="tel:0123456789"
-                  class="flex items-center justify-center gap-2.5 w-full px-8 py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
+                  :href="`tel:${contactHotline || contactPhone}`"
+                  class="flex items-center justify-center gap-2.5 w-full px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                   <span>Liên hệ tư vấn</span>
@@ -380,7 +381,7 @@ useSeoMeta({
               </div>
 
               <!-- Trust badges -->
-              <div class="grid grid-cols-2 gap-3 mt-auto pt-5 border-t border-gray-100">
+              <div class="grid grid-cols-2 gap-2 sm:gap-3 mt-auto pt-3 sm:pt-5 border-t border-gray-100">
                 <div v-if="product.warranty_months" class="flex items-center gap-3 p-3 rounded-xl bg-blue-50/70">
                   <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -694,7 +695,7 @@ useSeoMeta({
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </NuxtLink>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-5">
             <NuxtLink 
               v-for="related in relatedProducts" 
               :key="related.id"
@@ -850,5 +851,14 @@ useSeoMeta({
 :deep(.short-desc-list li strong) {
   color: #1e293b;
   font-weight: 600;
+}
+
+/* ── Mobile scrollbar hide ── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>

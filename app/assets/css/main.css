@@ -368,3 +368,86 @@ body {
   letter-spacing: 0.02em;
 }
 
+/* ========== Mobile Responsive Enhancements ========== */
+
+/* Prevent horizontal overflow on all screens */
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Make all images responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Container mobile adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Smaller header on mobile */
+  header .container .h-16 {
+    height: 52px;
+  }
+
+  /* Product grid: 2 columns tighter on small phones */
+  .grid-cols-2 {
+    gap: 8px;
+  }
+
+  /* Footer spacing to clear bottom tab bar */
+  footer {
+    padding-bottom: 70px;
+  }
+
+  /* Prose content images shouldn't overflow */
+  .prose img,
+  .prose table {
+    max-width: 100% !important;
+    overflow-x: auto;
+  }
+
+  /* Search overlay adjust on mobile */
+  .search-overlay .relative {
+    margin-top: 8px;
+  }
+}
+
+/* Extra-small phones (< 375px) */
+@media (max-width: 374px) {
+  .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Tighter product cards */
+  .grid-cols-2 {
+    gap: 6px;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1023px) {
+  footer {
+    padding-bottom: 70px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects that don't make sense on touch */
+  .card-hover:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

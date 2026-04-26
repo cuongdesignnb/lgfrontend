@@ -33,7 +33,7 @@ export default defineNuxtConfig({
       title: 'LG Tech - Thiết bị điện cao cấp',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'description', content: 'Lgtech - Website bán hàng công nghệ, sản phẩm chính hãng giá tốt' },
       ],
       link: [
