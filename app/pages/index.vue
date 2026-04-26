@@ -166,16 +166,16 @@ onMounted(() => {
     <section class="bg-[#f5f0e8]">
       <div class="container mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-4 sm:pb-6">
         <!-- Hero Banner -->
-        <div class="hero-banner relative rounded-xl sm:rounded-2xl overflow-hidden">
-          <TransitionGroup :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'" tag="div" class="absolute inset-0">
-            <div v-for="(slide, si) in mainSlides" v-show="si === currentSlide" :key="si" class="absolute inset-0">
-              <img v-if="slide.image" :src="slide.image" :alt="slide.title" class="w-full h-full object-cover" />
+        <div class="hero-banner rounded-xl sm:rounded-2xl" style="position: relative; overflow: hidden;">
+          <TransitionGroup :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'" tag="div" class="absolute inset-0 w-full h-full">
+            <div v-for="(slide, si) in mainSlides" v-show="si === currentSlide" :key="si" class="absolute inset-0 w-full h-full">
+              <img v-if="slide.image" :src="slide.image" :alt="slide.title" class="block w-full h-full object-cover" />
               <div v-else class="w-full h-full bg-gradient-to-br from-[#f0e4d0] to-[#e6d5bc] flex items-center justify-center">
                 <span class="text-3xl font-bold text-[#8b7355]">LG Tech</span>
               </div>
             </div>
           </TransitionGroup>
-          <!-- Nav arrows - smaller on mobile -->
+          <!-- Nav arrows -->
           <button @click="prevSlide" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center transition-colors shadow-md" aria-label="Previous">
             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
           </button>
@@ -183,13 +183,13 @@ onMounted(() => {
             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </button>
           <!-- Dots -->
-          <div class="absolute bottom-2.5 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+          <div style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; gap: 6px;">
             <button v-for="(_, di) in mainSlides" :key="di" @click="goToSlide(di)"
               class="h-2 sm:h-3 rounded-full transition-all duration-300"
               :class="di === currentSlide ? 'w-6 sm:w-8 bg-[#c8102e]' : 'w-2 sm:w-3 bg-white/60 hover:bg-white/80'"
               :aria-label="`Slide ${di + 1}`" />
           </div>
-          <!-- CTA button - hidden on very small screens, shown bottom-right -->
+          <!-- CTA button - hidden on mobile -->
           <NuxtLink :to="mainSlides[currentSlide]?.link || '/san-pham'" class="hidden sm:block absolute bottom-5 right-5 z-20 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition-colors border border-gray-200">
             Xem thêm
           </NuxtLink>

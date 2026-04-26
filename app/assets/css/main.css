@@ -243,20 +243,26 @@ body {
 }
 
 /* ========== Hero Banner Responsive Aspect Ratio ========== */
-.hero-banner {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 20 / 7; /* ~1200x420 — matches PDF banner proportions */
-}
-@media (max-width: 1024px) {
-  .hero-banner { aspect-ratio: 16 / 7; }
-}
-@media (max-width: 640px) {
-  .hero-banner { aspect-ratio: 4 / 3; }
-}
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+@layer components {
+  .hero-banner {
+    position: relative !important;
+    width: 100%;
+    overflow: hidden !important;
+    aspect-ratio: 20 / 7;
+  }
+  @media (max-width: 1024px) {
+    .hero-banner { aspect-ratio: 16 / 7; }
+  }
+  @media (max-width: 640px) {
+    .hero-banner {
+      aspect-ratio: 3 / 1;
+      min-height: 120px;
+    }
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+  }
 }
 
 /* Subtle pulse for badges */
