@@ -164,9 +164,9 @@ onMounted(() => {
   <div>
     <!-- ============ HERO BANNER ============ -->
     <section class="bg-[#f5f0e8]">
-      <div class="container mx-auto px-4 pt-4 pb-6">
-        <!-- Aspect ratio ~1200x420 (20:7) matching PDF banner proportions -->
-        <div class="hero-banner relative rounded-2xl overflow-hidden">
+      <div class="container mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-4 sm:pb-6">
+        <!-- Hero Banner -->
+        <div class="hero-banner relative rounded-xl sm:rounded-2xl overflow-hidden">
           <TransitionGroup :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'" tag="div" class="absolute inset-0">
             <div v-for="(slide, si) in mainSlides" v-show="si === currentSlide" :key="si" class="absolute inset-0">
               <img v-if="slide.image" :src="slide.image" :alt="slide.title" class="w-full h-full object-cover" />
@@ -175,19 +175,22 @@ onMounted(() => {
               </div>
             </div>
           </TransitionGroup>
-          <button @click="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center transition-colors shadow-md" aria-label="Previous">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          <!-- Nav arrows - smaller on mobile -->
+          <button @click="prevSlide" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center transition-colors shadow-md" aria-label="Previous">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
           </button>
-          <button @click="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center transition-colors shadow-md" aria-label="Next">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <button @click="nextSlide" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center transition-colors shadow-md" aria-label="Next">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </button>
-          <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <!-- Dots -->
+          <div class="absolute bottom-2.5 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
             <button v-for="(_, di) in mainSlides" :key="di" @click="goToSlide(di)"
-              class="h-3 rounded-full transition-all duration-300"
-              :class="di === currentSlide ? 'w-8 bg-[#c8102e]' : 'w-3 bg-white/60 hover:bg-white/80'"
+              class="h-2 sm:h-3 rounded-full transition-all duration-300"
+              :class="di === currentSlide ? 'w-6 sm:w-8 bg-[#c8102e]' : 'w-2 sm:w-3 bg-white/60 hover:bg-white/80'"
               :aria-label="`Slide ${di + 1}`" />
           </div>
-          <NuxtLink :to="mainSlides[currentSlide]?.link || '/san-pham'" class="absolute bottom-5 right-5 z-20 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition-colors border border-gray-200">
+          <!-- CTA button - hidden on very small screens, shown bottom-right -->
+          <NuxtLink :to="mainSlides[currentSlide]?.link || '/san-pham'" class="hidden sm:block absolute bottom-5 right-5 z-20 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition-colors border border-gray-200">
             Xem thêm
           </NuxtLink>
         </div>
@@ -198,11 +201,11 @@ onMounted(() => {
     <section class="bg-[#f5f0e8] pb-10">
       <div class="container mx-auto px-4">
         <!-- Section Title + Category Tabs -->
-        <div class="mb-6">
-          <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Khám phá sản phẩm nổi bật</h2>
-          <div class="flex items-center gap-1 flex-wrap overflow-x-auto scrollbar-hide">
+        <div class="mb-4 sm:mb-6">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">Khám phá sản phẩm nổi bật</h2>
+          <div class="flex items-center gap-1.5 sm:gap-1 flex-nowrap sm:flex-wrap overflow-x-auto scrollbar-hide pb-1">
             <button v-for="(tab, ti) in featuredTabs" :key="ti" @click="featuredTab = ti"
-              :class="['px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap',
+              :class="['px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap shrink-0',
                 featuredTab === ti
                   ? 'bg-[#c8102e] text-white shadow-sm'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200']">
@@ -214,7 +217,7 @@ onMounted(() => {
         <!-- Collage: Left Info + Right Product Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <!-- Left info panel -->
-          <div class="lg:col-span-3 bg-white rounded-2xl p-6 flex flex-col justify-between">
+          <div class="hidden lg:flex lg:col-span-3 bg-white rounded-2xl p-6 flex-col justify-between">
             <div>
               <div class="flex items-center gap-2 mb-4">
                 <div class="w-10 h-10 rounded-lg bg-[#c8102e] flex items-center justify-center text-white font-black text-xs">LG</div>
