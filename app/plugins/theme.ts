@@ -47,7 +47,8 @@ export default defineNuxtPlugin(async () => {
       })
     }
 
-    // Dynamic favicon from site_favicon setting (resolve relative URLs against API origin)
+    // Dynamic favicon from site_favicon setting (resolve relative URLs against API origin).
+    // Uses key 'site-favicon' to override the default <link rel=icon> declared in nuxt.config.ts.
     const favicon = String(settings.site_favicon || '').trim()
     if (favicon) {
       const apiBase = String(config.public.apiBase || '')
@@ -55,9 +56,28 @@ export default defineNuxtPlugin(async () => {
       const faviconUrl = /^https?:\/\//i.test(favicon)
         ? favicon
         : backendOrigin + (favicon.startsWith('/') ? favicon : '/' + favicon)
+      // Guess MIME type from extension (browsers respect this for tab icons).
+      const ext = (faviconUrl.split('?')[0]?.split('.').pop() || '').toLowerCase()
+      const typeMap: Record<string, string> = {
+        png: 'image/png', svg: 'image/svg+xml', ico: 'image/x-icon',
+        jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp',
+      }
+      const type = typeMap[ext] || 'image/png'
       useHead({
-        link: [{ rel: 'icon', href: faviconUrl }],
+        link: [{ rel: 'icon', type, href: faviconUrl, key: 'site-favicon' }],
       })
+
+      // Browsers cache favicon aggressively; on the client patch the existing
+      // <link rel=icon> in <head> so the new icon shows up without a hard reload.
+      if (import.meta.client && typeof document !== 'undefined') {
+        const links = document.head.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="shortcut icon"]')
+        links.forEach(l => l.parentNode?.removeChild(l))
+        const link = document.createElement('link')
+        link.rel = 'icon'
+        link.type = type
+        link.href = faviconUrl
+        document.head.appendChild(link)
+      }
     }
 
     // Dynamic site title via site_name

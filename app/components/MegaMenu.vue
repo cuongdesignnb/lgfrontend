@@ -255,7 +255,7 @@ const { siteLogo, siteName } = useSiteSettings()
           <!-- Mobile header -->
           <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
             <NuxtLink to="/" class="flex items-center gap-2" @click="mobileOpen = false">
-              <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="h-8 w-auto max-w-[140px] object-contain" />
+              <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="object-contain block" style="height:32px;width:auto;max-width:140px;" />
               <template v-else>
                 <div class="w-7 h-7 bg-[#c8102e] rounded-md flex items-center justify-center text-white font-bold text-xs">LG</div>
                 <span class="text-lg font-bold text-gray-900">{{ siteName }}</span>

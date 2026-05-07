@@ -37,7 +37,8 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Lgtech - Website bán hàng công nghệ, sản phẩm chính hãng giá tốt' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        // `key` lets the theme plugin override this when site_favicon is set in admin.
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', key: 'site-favicon' }
       ]
     }
   },

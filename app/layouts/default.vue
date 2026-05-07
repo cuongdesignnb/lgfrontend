@@ -112,7 +112,8 @@ function openMobileMenu() { mobileMenuOpen.value = true }
               v-if="siteLogo"
               :src="siteLogo"
               :alt="siteName"
-              class="h-10 w-auto max-w-[160px] object-contain"
+              class="object-contain block"
+              style="height:40px;width:auto;max-width:160px;"
             >
             <div
               v-else
