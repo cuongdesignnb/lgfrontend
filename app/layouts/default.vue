@@ -70,8 +70,33 @@ function goToSearchPage() {
   closeSearch()
 }
 
-// ─── Site Settings (dynamic phone, email, etc.) ────────
-const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } = useSiteSettings()
+// ─── Site Settings (dynamic phone, email, logo, social, etc.) ────────
+const {
+  contactPhone, contactHotline, contactEmail, contactAddress,
+  siteName, siteLogo, contactMap,
+  socialFacebook, socialYoutube, socialTiktok, socialZalo, socialInstagram,
+} = useSiteSettings()
+
+// Detect map embed type: full <iframe ...> snippet vs URL
+const mapEmbedHtml = computed(() => {
+  const v = String(contactMap.value || '').trim()
+  if (!v) return ''
+  if (/<iframe[\s\S]+<\/iframe>/i.test(v)) return v
+  // Looks like a URL — wrap in iframe
+  if (/^https?:\/\//i.test(v)) {
+    const safe = v.replace(/"/g, '&quot;')
+    return `<iframe src="${safe}" width="100%" height="100%" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`
+  }
+  return ''
+})
+
+const hasAnySocial = computed(() => Boolean(
+  socialFacebook.value || socialYoutube.value || socialTiktok.value || socialZalo.value || socialInstagram.value
+))
+
+// ─── Mobile menu drawer shared state (avoid mounting MegaMenu twice) ───
+const mobileMenuOpen = useState<boolean>('mobileMenuOpen', () => false)
+function openMobileMenu() { mobileMenuOpen.value = true }
 </script>
 
 <template>
@@ -82,15 +107,24 @@ const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } =
         <!-- Row 1: Logo + Nav + Actions -->
         <div class="flex items-center justify-between h-16 gap-6">
           <!-- Logo -->
-          <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
-            <div class="w-10 h-10 rounded-full bg-[#c8102e] flex items-center justify-center text-white font-bold text-lg tracking-tight border-2 border-[#c8102e]">
+          <NuxtLink to="/" class="flex items-center gap-2 shrink-0" :aria-label="siteName">
+            <img
+              v-if="siteLogo"
+              :src="siteLogo"
+              :alt="siteName"
+              class="h-10 w-auto max-w-[160px] object-contain"
+            >
+            <div
+              v-else
+              class="w-10 h-10 rounded-full bg-[#c8102e] flex items-center justify-center text-white font-bold text-lg tracking-tight border-2 border-[#c8102e]"
+            >
               <span class="text-sm font-black">LG</span>
             </div>
           </NuxtLink>
 
           <!-- Desktop Nav -->
           <div class="hidden lg:block flex-1">
-            <MegaMenu />
+            <MegaMenu :is-mobile="false" />
           </div>
 
           <!-- Right actions -->
@@ -130,7 +164,7 @@ const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } =
             </NuxtLink>
 
             <!-- Mobile menu trigger -->
-            <MegaMenu class="lg:hidden" />
+            <MegaMenu class="lg:hidden" :is-mobile="true" />
           </div>
         </div>
       </div>
@@ -260,19 +294,18 @@ const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } =
           <span>Trang chủ</span>
         </NuxtLink>
 
-        <!-- Sản phẩm -->
-        <NuxtLink
-          to="/products"
-          :class="[
-            'mobile-tab-item',
-            route.path.startsWith('/products') || route.path.startsWith('/categories') ? 'mobile-tab-active' : ''
-          ]"
+        <!-- Sản phẩm: opens shared mobile menu drawer (instant, no route fallback) -->
+        <button
+          type="button"
+          class="mobile-tab-item"
+          @click="openMobileMenu"
+          aria-label="Mở menu sản phẩm"
         >
           <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
           </svg>
           <span>Sản phẩm</span>
-        </NuxtLink>
+        </button>
 
         <!-- Giỏ hàng -->
         <NuxtLink
@@ -340,13 +373,26 @@ const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } =
               </li>
               <li v-if="contactEmail">Email: <a :href="`mailto:${contactEmail}`" class="text-blue-600 hover:underline">{{ contactEmail }}</a></li>
             </ul>
-            <h4 class="text-base font-bold mt-4 mb-2">Kết nối với chúng tôi</h4>
-            <div class="flex gap-3">
-              <a href="#" class="w-8 h-8 bg-gray-400 rounded-full"></a>
-              <a href="#" class="w-8 h-8 bg-gray-400 rounded-full"></a>
-              <a href="#" class="w-8 h-8 bg-gray-400 rounded-full"></a>
-              <a href="#" class="w-8 h-8 bg-gray-400 rounded-full"></a>
-            </div>
+            <template v-if="hasAnySocial">
+              <h4 class="text-base font-bold mt-4 mb-2">Kết nối với chúng tôi</h4>
+              <div class="flex flex-wrap gap-2">
+                <a v-if="socialFacebook" :href="socialFacebook" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full bg-[#1877F2] hover:opacity-90 flex items-center justify-center text-white transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88V14.9H7.9v-2.9h2.54V9.79c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.9h-2.34v6.98C18.34 21.13 22 16.99 22 12z"/></svg>
+                </a>
+                <a v-if="socialYoutube" :href="socialYoutube" target="_blank" rel="noopener" aria-label="YouTube" class="w-9 h-9 rounded-full bg-[#FF0000] hover:opacity-90 flex items-center justify-center text-white transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                </a>
+                <a v-if="socialTiktok" :href="socialTiktok" target="_blank" rel="noopener" aria-label="TikTok" class="w-9 h-9 rounded-full bg-black hover:opacity-90 flex items-center justify-center text-white transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.7a4.8 4.8 0 01-2.9-1 4.8 4.8 0 01-1.8-3H11v12.5a2.7 2.7 0 11-2.7-2.7c.3 0 .5 0 .8.1V9a5.7 5.7 0 105.7 5.7V9a7.4 7.4 0 004.8 1.8V6.9c0 0-.1 0-.1 0z"/></svg>
+                </a>
+                <a v-if="socialInstagram" :href="socialInstagram" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-90 flex items-center justify-center text-white transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1.1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2.1c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 3.6a4.1 4.1 0 110 8.2 4.1 4.1 0 010-8.2zm0 6.8a2.7 2.7 0 100-5.4 2.7 2.7 0 000 5.4zm5.2-7a1 1 0 110 1.9 1 1 0 010-1.9z"/></svg>
+                </a>
+                <a v-if="socialZalo" :href="socialZalo" target="_blank" rel="noopener" aria-label="Zalo" class="w-9 h-9 rounded-full bg-[#0068FF] hover:opacity-90 flex items-center justify-center text-white transition">
+                  <span class="text-[10px] font-extrabold">Zalo</span>
+                </a>
+              </div>
+            </template>
           </div>
 
           <!-- Support -->
@@ -363,9 +409,14 @@ const { contactPhone, contactHotline, contactEmail, contactAddress, siteName } =
             </ul>
           </div>
         </div>
+        <!-- Map -->
+        <div v-if="mapEmbedHtml" class="mt-10">
+          <h3 class="text-lg font-bold mb-3">Bản đồ</h3>
+          <div class="w-full aspect-[16/9] sm:aspect-[21/9] rounded-lg overflow-hidden border border-[#d9d3c7] bg-white" v-html="mapEmbedHtml" />
+        </div>
       </div>
       <div class="bg-[#3a3a3a] text-center text-sm text-gray-300 py-3">
-        Copyright 2026 © LG Tech
+        Copyright {{ new Date().getFullYear() }} © {{ siteName }}
       </div>
     </footer>
   </div>

@@ -47,6 +47,25 @@ export default defineNuxtPlugin(async () => {
       })
     }
 
+    // Dynamic favicon from site_favicon setting (resolve relative URLs against API origin)
+    const favicon = String(settings.site_favicon || '').trim()
+    if (favicon) {
+      const apiBase = String(config.public.apiBase || '')
+      const backendOrigin = apiBase.replace(/\/api\/v\d+\/?$/, '').replace(/\/$/, '')
+      const faviconUrl = /^https?:\/\//i.test(favicon)
+        ? favicon
+        : backendOrigin + (favicon.startsWith('/') ? favicon : '/' + favicon)
+      useHead({
+        link: [{ rel: 'icon', href: faviconUrl }],
+      })
+    }
+
+    // Dynamic site title via site_name
+    if (settings.site_name) {
+      const siteName = String(settings.site_name)
+      useHead({ titleTemplate: (t?: string) => (t ? `${t} | ${siteName}` : siteName) })
+    }
+
     // Also apply directly on client for instant updates
     if (import.meta.client && typeof document !== 'undefined') {
       const root = document.documentElement

@@ -22,10 +22,15 @@ interface MenuResponse {
   items: MenuItemData[]
 }
 
+const props = defineProps<{ isMobile?: boolean }>()
+
 const config = useRuntimeConfig()
 
+// Shared key: prevents duplicate fetch when this component is mounted twice
+// (once for desktop, once for mobile trigger).
 const { data: menuData } = await useFetch<MenuResponse>(`${config.public.apiBase}/menus/header`, {
-  default: () => ({ menu: { id: 0, name: '', slug: '' }, items: [] })
+  key: 'menu-header',
+  default: () => ({ menu: { id: 0, name: '', slug: '' }, items: [] }),
 })
 
 const items = computed(() => menuData.value?.items ?? [])
@@ -49,10 +54,12 @@ function cancelClose() {
 }
 
 function resolveUrl(item: MenuItemData): string {
-  if (item.type === 'category' && item.category) {
-    return '/' + item.category.slug
-  }
-  return item.url ?? '#'
+  // 1. Custom URL always wins when explicitly provided.
+  if (item.type === 'custom' && item.url) return item.url
+  // 2. Category type uses the category's slug under root.
+  if (item.type === 'category' && item.category?.slug) return '/' + item.category.slug
+  // 3. Page or any other type: use whatever URL admin saved; fallback to '#'.
+  return item.url || '#'
 }
 
 const badgeStyles: Record<string, string> = {
@@ -62,19 +69,26 @@ const badgeStyles: Record<string, string> = {
   orange: 'bg-orange-500 text-white',
 }
 
-// Mobile menu
-const mobileOpen = ref(false)
+// Mobile menu — shared state so any trigger (header hamburger or bottom tab) opens the same drawer.
+const mobileOpen = useState<boolean>('mobileMenuOpen', () => false)
 const mobileExpanded = ref<number | null>(null)
 
 function toggleMobileSubmenu(id: number) {
   mobileExpanded.value = mobileExpanded.value === id ? null : id
 }
+
+// Close drawer when the route changes so navigating from drawer doesn't leave it open.
+const route = useRoute()
+watch(() => route.fullPath, () => { mobileOpen.value = false })
+
+// Branding for mobile drawer header
+const { siteLogo, siteName } = useSiteSettings()
 </script>
 
 <template>
   <div>
     <!-- ===== DESKTOP NAV ===== -->
-    <nav class="hidden lg:block relative">
+    <nav v-if="!props.isMobile" class="hidden lg:block relative">
       <ul class="flex items-center gap-1">
         <li
           v-for="item in items"
@@ -203,6 +217,7 @@ function toggleMobileSubmenu(id: number) {
 
     <!-- ===== MOBILE HAMBURGER ===== -->
     <button
+      v-if="props.isMobile"
       class="lg:hidden p-2 text-gray-600 hover:text-gray-900"
       @click="mobileOpen = !mobileOpen"
       aria-label="Menu"
@@ -215,8 +230,8 @@ function toggleMobileSubmenu(id: number) {
       </svg>
     </button>
 
-    <!-- Mobile Overlay -->
-    <Teleport to="body">
+    <!-- Mobile Overlay (rendered once — only by the mobile-trigger instance) -->
+    <Teleport v-if="props.isMobile" to="body">
       <Transition
         enter-active-class="transition duration-300 ease-out"
         enter-from-class="opacity-0"
@@ -240,8 +255,11 @@ function toggleMobileSubmenu(id: number) {
           <!-- Mobile header -->
           <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
             <NuxtLink to="/" class="flex items-center gap-2" @click="mobileOpen = false">
-              <div class="w-7 h-7 bg-primary-600 rounded-md flex items-center justify-center text-white font-bold text-xs">PC</div>
-              <span class="text-lg font-bold text-gray-900">Lgtech</span>
+              <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="h-8 w-auto max-w-[140px] object-contain" />
+              <template v-else>
+                <div class="w-7 h-7 bg-[#c8102e] rounded-md flex items-center justify-center text-white font-bold text-xs">LG</div>
+                <span class="text-lg font-bold text-gray-900">{{ siteName }}</span>
+              </template>
             </NuxtLink>
             <button @click="mobileOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

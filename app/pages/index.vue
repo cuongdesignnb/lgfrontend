@@ -17,6 +17,16 @@ interface BannerSlide {
 const config = useRuntimeConfig()
 const fmt = (n: number) => new Intl.NumberFormat('vi-VN').format(n)
 
+const {
+  homepageHeroTitle, homepageHeroSubtitle,
+  homepagePrimaryCtaLabel, homepagePrimaryCtaUrl,
+  homepageSecondaryCtaLabel, homepageSecondaryCtaUrl,
+  homepageBrandIntroTitle, homepageBrandIntroContent,
+  homepageUspItems, homepageTargetCustomers,
+  homepageCaseStudies, homepageTestimonials, homepageApplicationImages,
+  resolveMediaUrl,
+} = useSiteSettings()
+
 // Fetch all data
 const { data: sections } = await useFetch<HomepageSection[]>(`${config.public.apiBase}/categories/homepage-sections`, { default: () => [] })
 const { data: featuredProducts } = await useFetch<Product[]>(`${config.public.apiBase}/products/featured`, { default: () => [] })
@@ -189,10 +199,120 @@ onMounted(() => {
               :class="di === currentSlide ? 'w-6 sm:w-8 bg-[#c8102e]' : 'w-2 sm:w-3 bg-white/60 hover:bg-white/80'"
               :aria-label="`Slide ${di + 1}`" />
           </div>
-          <!-- CTA button - hidden on mobile -->
-          <NuxtLink :to="mainSlides[currentSlide]?.link || '/san-pham'" class="hidden sm:block absolute bottom-5 right-5 z-20 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition-colors border border-gray-200">
+          <!-- Hero overlay text + dual CTA (only when admin sets a hero title) -->
+          <div v-if="homepageHeroTitle" class="hidden sm:flex absolute inset-y-0 left-0 z-20 max-w-[55%] flex-col justify-center px-8 lg:px-12 bg-gradient-to-r from-black/40 to-transparent text-white">
+            <p v-if="homepageHeroSubtitle" class="text-sm uppercase tracking-[0.2em] opacity-80 mb-2">{{ homepageHeroSubtitle }}</p>
+            <h1 class="text-3xl lg:text-5xl font-black leading-tight mb-5">{{ homepageHeroTitle }}</h1>
+            <div class="flex flex-wrap gap-3">
+              <NuxtLink v-if="homepagePrimaryCtaLabel" :to="homepagePrimaryCtaUrl || '/san-pham'" class="bg-[#c8102e] hover:bg-red-700 px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                {{ homepagePrimaryCtaLabel }}
+              </NuxtLink>
+              <NuxtLink v-if="homepageSecondaryCtaLabel" :to="homepageSecondaryCtaUrl || '/lien-he'" class="border border-white/70 hover:bg-white hover:text-gray-900 px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                {{ homepageSecondaryCtaLabel }}
+              </NuxtLink>
+            </div>
+          </div>
+          <!-- CTA button - fallback when no hero overlay text -->
+          <NuxtLink v-else :to="mainSlides[currentSlide]?.link || '/san-pham'" class="hidden sm:block absolute bottom-5 right-5 z-20 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition-colors border border-gray-200">
             Xem thêm
           </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BRAND INTRO + USP ============ -->
+    <section v-if="homepageBrandIntroTitle || homepageUspItems.length" class="bg-white border-y border-[#e0d9cd]">
+      <div class="container mx-auto px-4 py-10 sm:py-14">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div v-if="homepageBrandIntroTitle" class="lg:col-span-5">
+            <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[#c8102e] mb-2">Thương hiệu</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 leading-tight">{{ homepageBrandIntroTitle }}</h2>
+            <p v-if="homepageBrandIntroContent" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ homepageBrandIntroContent }}</p>
+            <div class="flex flex-wrap gap-3 mt-5">
+              <NuxtLink v-if="homepagePrimaryCtaLabel" :to="homepagePrimaryCtaUrl || '/san-pham'" class="bg-[#c8102e] hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                {{ homepagePrimaryCtaLabel }}
+              </NuxtLink>
+              <NuxtLink v-if="homepageSecondaryCtaLabel" :to="homepageSecondaryCtaUrl || '/lien-he'" class="border border-gray-300 hover:border-gray-900 text-gray-800 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                {{ homepageSecondaryCtaLabel }}
+              </NuxtLink>
+            </div>
+          </div>
+          <div v-if="homepageUspItems.length" class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-2 gap-4">
+            <div v-for="(usp, ui) in homepageUspItems" :key="ui" class="rounded-xl border border-gray-100 p-4 bg-[#fafaf7] hover:border-[#c8102e]/30 transition-colors">
+              <div class="text-2xl mb-2">{{ usp.icon }}</div>
+              <h3 class="font-bold text-sm text-gray-900 mb-1">{{ usp.title }}</h3>
+              <p class="text-xs text-gray-600 leading-relaxed">{{ usp.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TARGET CUSTOMERS ============ -->
+    <section v-if="homepageTargetCustomers.length" class="bg-[#f5f0e8] border-b border-[#e0d9cd]">
+      <div class="container mx-auto px-4 py-10 sm:py-12">
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Phù hợp với mọi không gian</h2>
+          <p class="text-gray-600 mt-2 text-sm">LG Tech đồng hành cùng các công trình từ dân dụng tới thương mại cao cấp.</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div v-for="(t, ti) in homepageTargetCustomers" :key="ti" class="bg-white rounded-2xl p-5 text-center border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="text-3xl mb-2">{{ t.icon }}</div>
+            <h3 class="font-bold text-gray-900 text-sm mb-1">{{ t.title }}</h3>
+            <p class="text-xs text-gray-600 leading-relaxed">{{ t.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ APPLICATION IMAGES (real-world usage) ============ -->
+    <section v-if="homepageApplicationImages.length" class="bg-white border-b border-[#e0d9cd]">
+      <div class="container mx-auto px-4 py-10 sm:py-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Ứng dụng thực tế</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <figure v-for="(img, ii) in homepageApplicationImages" :key="ii" class="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 group">
+            <img :src="resolveMediaUrl(img.image)" :alt="img.caption || ''" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <figcaption v-if="img.caption" class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs font-medium p-3">{{ img.caption }}</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CASE STUDIES ============ -->
+    <section v-if="homepageCaseStudies.length" class="bg-[#f5f0e8] border-b border-[#e0d9cd]">
+      <div class="container mx-auto px-4 py-10 sm:py-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Dự án tiêu biểu</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <article v-for="(cs, ci) in homepageCaseStudies" :key="ci" class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="aspect-[16/10] bg-gray-100 overflow-hidden">
+              <img v-if="cs.image" :src="resolveMediaUrl(cs.image)" :alt="cs.title || ''" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-4">
+              <p v-if="cs.location" class="text-[11px] uppercase tracking-wider text-[#c8102e] font-bold mb-1">{{ cs.location }}</p>
+              <h3 class="font-bold text-gray-900 text-base mb-1">{{ cs.title }}</h3>
+              <p v-if="cs.description" class="text-sm text-gray-600 line-clamp-3">{{ cs.description }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section v-if="homepageTestimonials.length" class="bg-white border-b border-[#e0d9cd]">
+      <div class="container mx-auto px-4 py-10 sm:py-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8">Khách hàng nói gì về chúng tôi</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          <blockquote v-for="(tm, mi) in homepageTestimonials" :key="mi" class="bg-[#fafaf7] rounded-2xl p-5 border border-gray-100">
+            <p class="text-sm text-gray-700 italic leading-relaxed mb-4">"{{ tm.content }}"</p>
+            <div class="flex items-center gap-3">
+              <img v-if="tm.avatar" :src="resolveMediaUrl(tm.avatar)" :alt="tm.name || ''" class="w-10 h-10 rounded-full object-cover bg-gray-200" />
+              <div v-else class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">{{ (tm.name || '?').charAt(0) }}</div>
+              <div>
+                <p class="font-semibold text-sm text-gray-900">{{ tm.name }}</p>
+                <p v-if="tm.role" class="text-xs text-gray-500">{{ tm.role }}</p>
+              </div>
+            </div>
+          </blockquote>
         </div>
       </div>
     </section>
