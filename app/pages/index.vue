@@ -94,16 +94,34 @@ function closeVideo() {
   setTimeout(() => { activeVideo.value = null }, 300)
 }
 
+// Hosts allowed inside <iframe src> for the popup video render.
+// Mirrors the backend whitelist so client never displays a foreign iframe.
+const ALLOWED_VIDEO_HOSTS = [
+  'youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com',
+  'player.vimeo.com', 'vimeo.com',
+  'tiktok.com', 'www.tiktok.com',
+  'facebook.com', 'www.facebook.com',
+]
+
+function hostIsAllowed(host: string): boolean {
+  host = host.toLowerCase()
+  return ALLOWED_VIDEO_HOSTS.some(h => host === h || host.endsWith('.' + h))
+}
+
 const processedEmbed = computed(() => {
-  if (!activeVideo.value?.embed_code) return ''
-  let code = activeVideo.value.embed_code
-  code = code.replace(/width="\d+"/g, 'width="100%"')
-  code = code.replace(/height="\d+"/g, 'height="100%"')
-  // Also ensure iframe has style for full container fill
-  if (code.includes('<iframe') && !code.includes('style=')) {
-    code = code.replace('<iframe', '<iframe style="width:100%;height:100%"')
-  }
-  return code
+  const raw = activeVideo.value?.embed_code as string | undefined
+  if (!raw) return ''
+  // Reject any <script> immediately
+  if (/<\s*script\b/i.test(raw)) return ''
+  // Extract first iframe + its src
+  const m = raw.match(/<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>(?:[\s\S]*?<\/iframe>)?/i)
+  if (!m) return ''
+  let host = ''
+  try { host = new URL(m[1] as string).host } catch { return '' }
+  if (!hostIsAllowed(host)) return ''
+  // Re-render a controlled iframe so width/height/style are predictable
+  const src = (m[1] as string).replace(/"/g, '&quot;')
+  return `<iframe src="${src}" style="width:100%;height:100%;border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
 })
 
 // Catalogue download
@@ -486,8 +504,11 @@ onMounted(() => {
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               Đóng
             </button>
-            <!-- Embed video -->
-            <div v-if="activeVideo.source === 'embed' && activeVideo.embed_code" class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl" v-html="processedEmbed"></div>
+            <!-- Embed video — only renders if domain whitelisted -->
+            <div v-if="activeVideo.source === 'embed' && processedEmbed" class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl" v-html="processedEmbed"></div>
+            <div v-else-if="activeVideo.source === 'embed'" class="aspect-video bg-black/80 rounded-xl flex items-center justify-center text-white/80 text-sm text-center px-6">
+              Mã nhúng video không hợp lệ hoặc đến từ domain chưa được hỗ trợ.
+            </div>
             <!-- Uploaded video -->
             <div v-else-if="activeVideo.video_url" class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
               <video :src="activeVideo.video_url" controls autoplay class="w-full h-full"></video>

@@ -9,7 +9,27 @@ interface ProductDetailResponse {
 const config = useRuntimeConfig()
 const route = useRoute()
 const { user, isAuthenticated, token } = useAuth()
-const { contactPhone, contactHotline } = useSiteSettings()
+const { contactPhone, contactHotline, homepageTargetCustomers } = useSiteSettings()
+
+// Benefits + applications surfaced on every product page.
+// Falls back to homepage target-customers config so admin can edit once.
+const productBenefits = [
+  { icon: '🛡️', title: 'An toàn cao cấp', desc: 'Vật liệu chống cháy, đạt tiêu chuẩn an toàn quốc tế.' },
+  { icon: '⏱️', title: 'Lắp đặt linh hoạt', desc: 'Thiết kế thanh ray, dễ thay đổi vị trí, mở rộng theo nhu cầu.' },
+  { icon: '✨', title: 'Thẩm mỹ tinh tế', desc: 'Đường nét tối giản, hài hòa với mọi không gian sống & làm việc.' },
+  { icon: '🤝', title: 'Bảo hành dài hạn', desc: 'Hỗ trợ kỹ thuật & bảo hành chính hãng, tư vấn lắp đặt miễn phí.' },
+]
+
+const applicationCustomers = computed(() => {
+  const fromSettings = homepageTargetCustomers.value
+  if (fromSettings && fromSettings.length) return fromSettings
+  return [
+    { icon: '🏠', title: 'Nhà ở', desc: 'Căn hộ, biệt thự, nhà phố' },
+    { icon: '🏨', title: 'Khách sạn & Showroom', desc: 'Tinh tế, an toàn, thẩm mỹ' },
+    { icon: '🏢', title: 'Văn phòng', desc: 'Linh hoạt, dễ mở rộng' },
+    { icon: '🤝', title: 'Đại lý / Nhà thầu', desc: 'Chính sách giá tốt' },
+  ]
+})
 
 const slug = route.params.product as string
 
@@ -168,7 +188,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50/60">
+  <div class="min-h-screen bg-[#f5f0e8]">
     <div class="container mx-auto px-3 sm:px-4 py-4 lg:py-10 max-w-7xl">
       <template v-if="product">
         <!-- Breadcrumb -->
@@ -177,11 +197,9 @@ useSeoMeta({
             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             Trang chủ
           </NuxtLink>
-          <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-          <NuxtLink to="/products" class="hover:text-primary-600 transition-colors shrink-0">Sản phẩm</NuxtLink>
           <template v-if="product.category">
             <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-            <NuxtLink :to="`/${product.category.slug}`" class="hover:text-primary-600 transition-colors shrink-0">
+            <NuxtLink :to="`/${product.category.slug}`" class="hover:text-[#c8102e] transition-colors shrink-0">
               {{ product.category.name }}
             </NuxtLink>
           </template>
@@ -248,8 +266,7 @@ useSeoMeta({
             <div class="flex flex-col">
               <!-- Brand badge -->
               <div v-if="product.brand" class="mb-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold uppercase tracking-wide">
-                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf7f1] border border-[#ece4d3] text-gray-700 text-xs font-semibold uppercase tracking-wide">
                   {{ product.brand.name }}
                 </span>
               </div>
@@ -286,21 +303,20 @@ useSeoMeta({
               <div class="border-t border-gray-100 my-1"></div>
 
               <!-- Price section -->
-              <div class="bg-gradient-to-r from-primary-50/80 to-orange-50/50 rounded-lg sm:rounded-xl p-3 sm:p-5 my-3 sm:my-5">
+              <div class="bg-[#faf7f1] border border-[#ece4d3] rounded-lg sm:rounded-xl p-3 sm:p-5 my-3 sm:my-5">
                 <div v-if="(product.sale_price || product.price) > 0" class="flex flex-wrap items-end gap-2 sm:gap-3">
-                  <span class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary-600">
+                  <span class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#c8102e]">
                     {{ formatPrice(product.sale_price || product.price) }}
                   </span>
                   <span v-if="product.sale_price" class="text-sm sm:text-lg text-gray-400 line-through mb-0.5">
                     {{ formatPrice(product.price) }}
                   </span>
-                  <span v-if="product.sale_price" class="mb-1 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] sm:text-xs font-bold rounded-md">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                    {{ discountPercent }}%
+                  <span v-if="product.sale_price" class="mb-1 inline-flex items-center gap-1 px-2 py-0.5 bg-[#c8102e] text-white text-[10px] sm:text-xs font-bold rounded-md">
+                    -{{ discountPercent }}%
                   </span>
                 </div>
                 <div v-else class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                  <span class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-600">Liên hệ</span>
+                  <span class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900">Liên hệ</span>
                   <span class="text-xs sm:text-sm text-gray-500">Vui lòng liên hệ để được báo giá tốt nhất</span>
                 </div>
               </div>
@@ -352,11 +368,11 @@ useSeoMeta({
                 <button
                   :disabled="addingToCart"
                   :class="[
-                    'flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl font-semibold text-white transition-all duration-300 shadow-lg',
-                    addedToCart 
-                      ? 'bg-emerald-500 shadow-emerald-200'
-                      : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-primary-200 hover:shadow-primary-300 hover:shadow-xl active:scale-[0.98]',
-                    addingToCart && 'opacity-50 cursor-not-allowed !shadow-none'
+                    'flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl font-semibold text-white transition-colors',
+                    addedToCart
+                      ? 'bg-emerald-600 hover:bg-emerald-700'
+                      : 'bg-[#c8102e] hover:bg-red-700',
+                    addingToCart && 'opacity-60 cursor-not-allowed'
                   ]"
                   @click="addToCart"
                 >
@@ -370,55 +386,128 @@ useSeoMeta({
                 </button>
               </div>
               <!-- Contact button when price = 0 or out of stock -->
-              <div v-else class="mb-6">
+              <div v-else class="mb-4">
                 <a
                   :href="`tel:${contactHotline || contactPhone}`"
-                  class="flex items-center justify-center gap-2.5 w-full px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
+                  class="flex items-center justify-center gap-2.5 w-full px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-white bg-[#c8102e] hover:bg-red-700 transition-colors"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                   <span>Liên hệ tư vấn</span>
                 </a>
               </div>
 
-              <!-- Trust badges -->
+              <!-- Secondary CTAs: consultation + dealer -->
+              <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-5">
+                <NuxtLink
+                  to="/lien-he"
+                  class="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border border-gray-300 hover:border-[#c8102e] hover:text-[#c8102e] text-sm font-semibold text-gray-800 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                  Nhận tư vấn
+                </NuxtLink>
+                <NuxtLink
+                  to="/lien-he?type=dealer"
+                  class="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border border-gray-300 hover:border-[#c8102e] hover:text-[#c8102e] text-sm font-semibold text-gray-800 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-5.13a4 4 0 11-8 0 4 4 0 018 0zm6 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                  Liên hệ đại lý
+                </NuxtLink>
+              </div>
+
+              <!-- Trust badges (unified neutral palette) -->
               <div class="grid grid-cols-2 gap-2 sm:gap-3 mt-auto pt-3 sm:pt-5 border-t border-gray-100">
-                <div v-if="product.warranty_months" class="flex items-center gap-3 p-3 rounded-xl bg-blue-50/70">
-                  <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <div v-if="product.warranty_months" class="flex items-center gap-3 p-3 rounded-xl bg-[#faf7f1] border border-[#ece4d3]">
+                  <div class="w-10 h-10 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                   </div>
                   <div>
-                    <p class="text-xs text-blue-600 font-semibold">Bảo hành</p>
-                    <p class="text-sm font-bold text-blue-800">{{ product.warranty_months }} tháng</p>
+                    <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide">Bảo hành</p>
+                    <p class="text-sm font-bold text-gray-900">{{ product.warranty_months }} tháng</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-green-50/70">
-                  <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-[#faf7f1] border border-[#ece4d3]">
+                  <div class="w-10 h-10 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                   </div>
                   <div>
-                    <p class="text-xs text-green-600 font-semibold">Cam kết</p>
-                    <p class="text-sm font-bold text-green-800">Chính hãng 100%</p>
+                    <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide">Cam kết</p>
+                    <p class="text-sm font-bold text-gray-900">Chính hãng 100%</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/70">
-                  <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-[#faf7f1] border border-[#ece4d3]">
+                  <div class="w-10 h-10 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                   </div>
                   <div>
-                    <p class="text-xs text-purple-600 font-semibold">Đổi trả</p>
-                    <p class="text-sm font-bold text-purple-800">Trong 30 ngày</p>
+                    <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide">Đổi trả</p>
+                    <p class="text-sm font-bold text-gray-900">Trong 30 ngày</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-orange-50/70">
-                  <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-[#faf7f1] border border-[#ece4d3]">
+                  <div class="w-10 h-10 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                   </div>
                   <div>
-                    <p class="text-xs text-orange-600 font-semibold">Giao hàng</p>
-                    <p class="text-sm font-bold text-orange-800">Nhanh chóng</p>
+                    <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide">Giao hàng</p>
+                    <p class="text-sm font-bold text-gray-900">Toàn quốc</p>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== LỢI ÍCH & ỨNG DỤNG (ngôn ngữ người dùng) ===== -->
+        <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+            <!-- Lợi ích thực tế -->
+            <div>
+              <span class="inline-block text-[11px] font-bold uppercase tracking-[0.18em] text-[#c8102e] mb-2">Vì sao chọn LG Tech</span>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Lợi ích thực tế</h2>
+              <ul class="space-y-3">
+                <li v-for="(b, bi) in productBenefits" :key="bi" class="flex items-start gap-3">
+                  <span class="w-9 h-9 shrink-0 rounded-lg bg-[#faf7f1] border border-[#ece4d3] flex items-center justify-center text-base">{{ b.icon }}</span>
+                  <div class="leading-snug">
+                    <p class="font-semibold text-sm text-gray-900">{{ b.title }}</p>
+                    <p class="text-xs sm:text-sm text-gray-600">{{ b.desc }}</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Phù hợp với không gian -->
+            <div>
+              <span class="inline-block text-[11px] font-bold uppercase tracking-[0.18em] text-[#c8102e] mb-2">Phù hợp với</span>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Ứng dụng thực tế</h2>
+              <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                <div v-for="(app, ai) in applicationCustomers" :key="ai" class="rounded-xl border border-gray-200 bg-[#faf7f1] p-3 sm:p-4 text-center">
+                  <div class="text-2xl mb-1">{{ app.icon }}</div>
+                  <p class="font-semibold text-sm text-gray-900">{{ app.title }}</p>
+                  <p class="text-[11px] sm:text-xs text-gray-600 mt-0.5">{{ app.desc }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inline CTA row: consultation + dealer + add-to-cart-anchor -->
+          <div class="mt-6 sm:mt-8 pt-5 border-t border-gray-100 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+            <p class="text-sm text-gray-600 leading-relaxed max-w-xl">
+              Cần tư vấn chọn cấu hình thanh ray phù hợp công trình của bạn? Đội ngũ LG Tech hỗ trợ khảo sát và báo giá miễn phí.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 shrink-0">
+              <NuxtLink
+                to="/lien-he"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#c8102e] hover:bg-red-700 text-white text-sm font-semibold transition-colors"
+              >
+                Nhận tư vấn
+              </NuxtLink>
+              <a
+                :href="`tel:${contactHotline || contactPhone}`"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-gray-300 hover:border-[#c8102e] hover:text-[#c8102e] text-gray-800 text-sm font-semibold transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                Gọi đại lý
+              </a>
             </div>
           </div>
         </div>
@@ -429,11 +518,11 @@ useSeoMeta({
           <div class="flex-1 min-w-0 overflow-hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
               <!-- Header -->
-              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-primary-50/60 to-transparent">
-                <div class="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
-                  <svg class="w-4.5 h-4.5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h12"/></svg>
+              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-[#faf7f1]">
+                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                  <svg class="w-4 h-4 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h12"/></svg>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900">Đánh giá chi tiết</h2>
+                <h2 class="text-lg font-bold text-gray-900">Mô tả chi tiết</h2>
               </div>
               <!-- Content -->
               <div class="p-6">
@@ -450,9 +539,9 @@ useSeoMeta({
           <div class="w-full lg:w-[420px] xl:w-[460px] flex-shrink-0">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:sticky lg:top-4">
               <!-- Header -->
-              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50/70 to-transparent">
-                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-[#faf7f1]">
+                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+                  <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                 </div>
                 <h2 class="text-lg font-bold text-gray-900">Thông số kỹ thuật</h2>
               </div>
@@ -467,20 +556,20 @@ useSeoMeta({
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
-                    <tr 
-                      v-for="(spec, index) in product.parsed_specifications" 
+                    <tr
+                      v-for="(spec, index) in product.parsed_specifications"
                       :key="index"
-                      class="group hover:bg-blue-50/40 transition-colors"
+                      class="group hover:bg-[#faf7f1]/60 transition-colors"
                     >
                       <td class="px-4 py-3 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">
+                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#faf7f1] text-gray-700 text-xs font-bold border border-[#ece4d3]">
                           {{ index + 1 }}
                         </span>
                       </td>
                       <td class="px-4 py-3 font-semibold text-gray-700 whitespace-nowrap">
                         {{ spec.label }}
                       </td>
-                      <td class="px-4 py-3 text-gray-600 font-medium text-primary-700">
+                      <td class="px-4 py-3 text-gray-900 font-medium">
                         {{ spec.value }}
                       </td>
                     </tr>
@@ -700,7 +789,7 @@ useSeoMeta({
               v-for="related in relatedProducts" 
               :key="related.id"
               :to="`/${related.category?.slug || route.params.category}/${related.slug}`"
-              class="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition-all duration-300"
+              class="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md hover:border-[#c8102e]/30 transition-all duration-300"
             >
               <div class="aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
                 <img 
@@ -712,16 +801,16 @@ useSeoMeta({
                 <span v-else class="text-4xl text-gray-300">📦</span>
               </div>
               <div class="p-4">
-                <h3 class="font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">{{ related.name }}</h3>
+                <h3 class="font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ related.name }}</h3>
                 <template v-if="(related.sale_price || related.price) > 0">
-                  <p class="text-lg font-bold text-primary-600">
+                  <p class="text-lg font-bold text-[#c8102e]">
                     {{ formatPrice(related.sale_price || related.price) }}
                   </p>
                   <p v-if="related.sale_price" class="text-sm text-gray-400 line-through">
                     {{ formatPrice(related.price) }}
                   </p>
                 </template>
-                <p v-else class="text-lg font-bold text-amber-600">Liên hệ</p>
+                <p v-else class="text-lg font-bold text-gray-900">Liên hệ</p>
               </div>
             </NuxtLink>
           </div>
