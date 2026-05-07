@@ -188,73 +188,73 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Thanh toán</h1>
+  <div class="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-5 sm:mb-8">Thanh toán</h1>
 
     <!-- Empty cart -->
     <div v-if="cartItems.length === 0" class="text-center py-12">
       <p class="text-6xl mb-4">🛒</p>
-      <p class="text-xl text-gray-500 mb-6">Giỏ hàng trống</p>
+      <p class="text-lg sm:text-xl text-gray-500 mb-6">Giỏ hàng trống</p>
       <UButton to="/" size="lg">Mua sắm ngay</UButton>
     </div>
 
     <!-- QR Payment Modal -->
     <div
       v-else-if="paymentData"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4 overflow-y-auto"
     >
-      <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center">
+      <div class="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 text-center my-auto max-h-[calc(100vh-1.5rem)] overflow-y-auto">
         <template v-if="!paymentVerified">
-          <h2 class="text-2xl font-bold mb-2">Quét mã QR để thanh toán</h2>
-          <p class="text-gray-600 mb-4">
+          <h2 class="text-xl sm:text-2xl font-bold mb-2 break-words">Quét mã QR để thanh toán</h2>
+          <p class="text-sm sm:text-base text-gray-600 mb-4 break-words">
             Đơn hàng #{{ orderResult?.order_number }}
           </p>
 
           <!-- QR Code -->
-          <div class="bg-gray-100 rounded-xl p-4 mb-4 inline-block">
-            <img :src="paymentData.qr_url" alt="QR Code" class="w-64 h-64" />
+          <div class="bg-gray-100 rounded-xl p-3 sm:p-4 mb-4 inline-block">
+            <img :src="paymentData.qr_url" alt="QR Code" class="w-48 h-48 sm:w-64 sm:h-64 object-contain" />
           </div>
 
-          <p class="text-2xl font-bold text-primary-600 mb-4">
+          <p class="text-xl sm:text-2xl font-bold text-primary-600 mb-4 break-words">
             {{ new Intl.NumberFormat("vi-VN").format(paymentData.amount) }}₫
           </p>
 
           <!-- Bank info -->
-          <div class="bg-blue-50 rounded-lg p-4 mb-4 text-left space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-blue-800">Ngân hàng:</span>
-              <span class="font-semibold text-blue-900">{{
+          <div class="bg-blue-50 rounded-lg p-3 sm:p-4 mb-4 text-left space-y-2">
+            <div class="flex flex-wrap justify-between items-baseline gap-2">
+              <span class="text-xs sm:text-sm text-blue-800 shrink-0">Ngân hàng:</span>
+              <span class="font-semibold text-blue-900 break-all text-sm sm:text-base">{{
                 paymentData.bank_code
               }}</span>
             </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-blue-800">Số tài khoản:</span>
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-blue-900">{{
+            <div class="flex flex-wrap justify-between items-baseline gap-2">
+              <span class="text-xs sm:text-sm text-blue-800 shrink-0">Số tài khoản:</span>
+              <div class="flex items-baseline gap-2 flex-wrap min-w-0">
+                <span class="font-semibold text-blue-900 break-all text-sm sm:text-base">{{
                   paymentData.bank_account
                 }}</span>
                 <button
-                  class="text-xs text-blue-600 hover:underline"
+                  class="text-xs text-blue-600 hover:underline shrink-0"
                   @click="copyToClipboard(paymentData.bank_account)"
                 >
                   Sao chép
                 </button>
               </div>
             </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-blue-800">Chủ TK:</span>
-              <span class="font-semibold text-blue-900">{{
+            <div class="flex flex-wrap justify-between items-baseline gap-2">
+              <span class="text-xs sm:text-sm text-blue-800 shrink-0">Chủ TK:</span>
+              <span class="font-semibold text-blue-900 break-words text-right text-sm sm:text-base">{{
                 paymentData.account_name
               }}</span>
             </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-blue-800">Nội dung CK:</span>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-blue-900">{{
+            <div class="flex flex-wrap justify-between items-baseline gap-2">
+              <span class="text-xs sm:text-sm text-blue-800 shrink-0">Nội dung CK:</span>
+              <div class="flex items-baseline gap-2 flex-wrap min-w-0">
+                <span class="font-bold text-blue-900 break-all text-sm sm:text-base">{{
                   paymentData.transfer_content
                 }}</span>
                 <button
-                  class="text-xs text-blue-600 hover:underline"
+                  class="text-xs text-blue-600 hover:underline shrink-0"
                   @click="copyToClipboard(paymentData.transfer_content)"
                 >
                   Sao chép
@@ -293,20 +293,20 @@ useSeoMeta({
     </div>
 
     <!-- Checkout Form -->
-    <div v-else class="grid lg:grid-cols-3 gap-8">
+    <div v-else class="grid lg:grid-cols-3 gap-5 lg:gap-8">
       <!-- Form -->
-      <div class="lg:col-span-2 space-y-6">
+      <div class="lg:col-span-2 space-y-4 sm:space-y-6">
         <!-- Customer Info -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h2 class="text-xl font-bold mb-4">Thông tin khách hàng</h2>
+        <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          <h2 class="text-lg sm:text-xl font-bold mb-4">Thông tin khách hàng</h2>
 
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">Họ tên *</label>
               <input
                 v-model="form.customer_name"
                 type="text"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Nguyễn Văn A"
               />
             </div>
@@ -317,16 +317,16 @@ useSeoMeta({
               <input
                 v-model="form.customer_phone"
                 type="tel"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="0912345678"
               />
             </div>
-            <div class="md:col-span-2">
+            <div class="sm:col-span-2">
               <label class="block text-sm font-medium mb-1">Email *</label>
               <input
                 v-model="form.customer_email"
                 type="email"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="email@example.com"
               />
             </div>
@@ -334,17 +334,15 @@ useSeoMeta({
         </div>
 
         <!-- Shipping Address -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h2 class="text-xl font-bold mb-4">Địa chỉ giao hàng</h2>
+        <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          <h2 class="text-lg sm:text-xl font-bold mb-4">Địa chỉ giao hàng</h2>
 
-          <div class="grid md:grid-cols-3 gap-4">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div>
-              <label class="block text-sm font-medium mb-1"
-                >Tỉnh/Thành phố *</label
-              >
+              <label class="block text-sm font-medium mb-1">Tỉnh/Thành phố *</label>
               <select
                 v-model="selectedProvinceCode"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
               >
                 <option value="">-- Chọn Tỉnh/Thành phố --</option>
                 <option v-for="p in provinces" :key="p.code" :value="p.code">
@@ -357,7 +355,7 @@ useSeoMeta({
               <input
                 v-model="form.shipping_district"
                 type="text"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Quận 1"
               />
             </div>
@@ -365,7 +363,7 @@ useSeoMeta({
               <label class="block text-sm font-medium mb-1">Phường/Xã</label>
               <select
                 v-model="form.shipping_ward"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
                 :disabled="!selectedProvinceCode"
               >
                 <option value="">-- Chọn Phường/Xã --</option>
@@ -374,23 +372,21 @@ useSeoMeta({
                 </option>
               </select>
             </div>
-            <div class="md:col-span-3">
-              <label class="block text-sm font-medium mb-1"
-                >Địa chỉ chi tiết *</label
-              >
+            <div class="sm:col-span-2 lg:col-span-3">
+              <label class="block text-sm font-medium mb-1">Địa chỉ chi tiết *</label>
               <input
                 v-model="form.shipping_address"
                 type="text"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Số nhà, tên đường"
               />
             </div>
-            <div class="md:col-span-3">
+            <div class="sm:col-span-2 lg:col-span-3">
               <label class="block text-sm font-medium mb-1">Ghi chú</label>
               <textarea
                 v-model="form.notes"
                 rows="3"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                class="w-full px-3 sm:px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Ghi chú cho người giao hàng..."
               ></textarea>
             </div>
@@ -398,12 +394,12 @@ useSeoMeta({
         </div>
 
         <!-- Payment Method -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h2 class="text-xl font-bold mb-4">Phương thức thanh toán</h2>
+        <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          <h2 class="text-lg sm:text-xl font-bold mb-4">Phương thức thanh toán</h2>
 
           <div class="space-y-3">
             <label
-              class="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50"
+              class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-gray-50"
               :class="{
                 'border-primary-500 bg-primary-50':
                   form.payment_method === 'sepay',
@@ -413,19 +409,19 @@ useSeoMeta({
                 v-model="form.payment_method"
                 type="radio"
                 value="sepay"
-                class="w-5 h-5 text-primary-600"
+                class="w-5 h-5 text-primary-600 shrink-0"
               />
-              <div class="flex-1">
-                <p class="font-semibold">Chuyển khoản qua QR (Sepay)</p>
-                <p class="text-sm text-gray-500">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm sm:text-base">Chuyển khoản qua QR (Sepay)</p>
+                <p class="text-xs sm:text-sm text-gray-500">
                   Quét mã QR để thanh toán nhanh chóng
                 </p>
               </div>
-              <span class="text-3xl">📱</span>
+              <span class="text-2xl sm:text-3xl shrink-0">📱</span>
             </label>
 
             <label
-              class="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50"
+              class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-gray-50"
               :class="{
                 'border-primary-500 bg-primary-50':
                   form.payment_method === 'cod',
@@ -435,15 +431,15 @@ useSeoMeta({
                 v-model="form.payment_method"
                 type="radio"
                 value="cod"
-                class="w-5 h-5 text-primary-600"
+                class="w-5 h-5 text-primary-600 shrink-0"
               />
-              <div class="flex-1">
-                <p class="font-semibold">Thanh toán khi nhận hàng (COD)</p>
-                <p class="text-sm text-gray-500">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm sm:text-base">Thanh toán khi nhận hàng (COD)</p>
+                <p class="text-xs sm:text-sm text-gray-500">
                   Thanh toán bằng tiền mặt khi giao hàng
                 </p>
               </div>
-              <span class="text-3xl">💵</span>
+              <span class="text-2xl sm:text-3xl shrink-0">💵</span>
             </label>
           </div>
         </div>
@@ -451,8 +447,8 @@ useSeoMeta({
 
       <!-- Order Summary -->
       <div class="lg:col-span-1">
-        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-4">
-          <h2 class="text-xl font-bold mb-4">Đơn hàng của bạn</h2>
+        <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6 lg:sticky lg:top-4">
+          <h2 class="text-lg sm:text-xl font-bold mb-4">Đơn hàng của bạn</h2>
 
           <!-- Order Items -->
           <div class="space-y-3 mb-4 max-h-64 overflow-y-auto">

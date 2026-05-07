@@ -275,11 +275,11 @@ useSeoMeta({
               <h1 class="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4">{{ product.name }}</h1>
 
               <!-- Rating + Reviews count -->
-              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 sm:gap-3 mb-3 sm:mb-5 text-xs sm:text-sm">
                 <div class="flex items-center gap-0.5">
                   <template v-for="i in 5" :key="i">
-                    <svg 
-                      class="w-4 h-4 sm:w-5 sm:h-5" 
+                    <svg
+                      class="w-4 h-4 sm:w-5 sm:h-5"
                       :class="i <= Math.round(Number(averageRating)) ? 'text-amber-400' : 'text-gray-200'"
                       fill="currentColor" viewBox="0 0 20 20"
                     >
@@ -287,16 +287,16 @@ useSeoMeta({
                     </svg>
                   </template>
                 </div>
-                <span v-if="Number(averageRating) > 0" class="text-xs sm:text-sm font-semibold text-gray-700">{{ averageRating }}</span>
-                <span class="text-xs sm:text-sm text-gray-400">|</span>
-                <button 
+                <span v-if="Number(averageRating) > 0" class="font-semibold text-gray-700">{{ averageRating }}</span>
+                <span class="hidden sm:inline text-gray-300">·</span>
+                <button
                   @click="scrollToReviews"
-                  class="text-xs sm:text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                  class="text-primary-600 hover:text-primary-700 font-medium transition-colors"
                 >
                   {{ product.reviews?.length || 0 }} đánh giá
                 </button>
-                <span class="text-xs sm:text-sm text-gray-400">|</span>
-                <span class="text-xs sm:text-sm text-gray-500">SKU: {{ product.sku }}</span>
+                <span class="hidden sm:inline text-gray-300">·</span>
+                <span class="text-gray-500 break-all">SKU: {{ product.sku }}</span>
               </div>
 
               <!-- Divider -->
@@ -518,16 +518,16 @@ useSeoMeta({
           <div class="flex-1 min-w-0 overflow-hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
               <!-- Header -->
-              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-[#faf7f1]">
-                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+              <div class="flex items-center gap-2.5 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-[#faf7f1]">
+                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center shrink-0">
                   <svg class="w-4 h-4 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h12"/></svg>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900">Mô tả chi tiết</h2>
+                <h2 class="text-base sm:text-lg font-bold text-gray-900">Mô tả chi tiết</h2>
               </div>
               <!-- Content -->
-              <div class="p-6">
+              <div class="p-4 sm:p-6">
                 <div v-if="product.description" class="prose prose-sm prose-gray max-w-none prose-headings:text-gray-800 prose-headings:font-bold prose-a:text-primary-600 prose-a:font-semibold prose-img:rounded-xl prose-p:leading-relaxed prose-p:text-gray-600 break-words" v-html="product.description"></div>
-                <div v-else class="text-center py-16 text-gray-400">
+                <div v-else class="text-center py-12 sm:py-16 text-gray-400">
                   <svg class="w-14 h-14 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h12"/></svg>
                   <p class="text-sm">Chưa có mô tả chi tiết</p>
                 </div>
@@ -535,24 +535,25 @@ useSeoMeta({
             </div>
           </div>
 
-          <!-- Thông số kỹ thuật — bên phải (sticky) -->
+          <!-- Thông số kỹ thuật — bên phải (sticky on desktop, full-width below on mobile) -->
           <div class="w-full lg:w-[420px] xl:w-[460px] flex-shrink-0">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:sticky lg:top-4">
               <!-- Header -->
-              <div class="flex items-center gap-2.5 px-6 py-4 border-b border-gray-100 bg-[#faf7f1]">
-                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center">
+              <div class="flex items-center gap-2.5 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-[#faf7f1]">
+                <div class="w-8 h-8 rounded-lg bg-white border border-[#ece4d3] flex items-center justify-center shrink-0">
                   <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900">Thông số kỹ thuật</h2>
+                <h2 class="text-base sm:text-lg font-bold text-gray-900">Thông số kỹ thuật</h2>
               </div>
               <!-- Specs Table -->
               <div v-if="product.parsed_specifications?.length" class="overflow-hidden">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm table-fixed">
                   <thead>
                     <tr class="bg-gray-50/80">
-                      <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 w-10">STT</th>
-                      <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Thông số</th>
-                      <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Chi tiết</th>
+                      <!-- STT column hidden on mobile to free up horizontal space -->
+                      <th class="hidden sm:table-cell px-3 sm:px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 w-10">STT</th>
+                      <th class="px-3 sm:px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 w-2/5">Thông số</th>
+                      <th class="px-3 sm:px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Chi tiết</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
@@ -561,15 +562,15 @@ useSeoMeta({
                       :key="index"
                       class="group hover:bg-[#faf7f1]/60 transition-colors"
                     >
-                      <td class="px-4 py-3 text-center">
+                      <td class="hidden sm:table-cell px-3 sm:px-4 py-3 text-center">
                         <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#faf7f1] text-gray-700 text-xs font-bold border border-[#ece4d3]">
                           {{ index + 1 }}
                         </span>
                       </td>
-                      <td class="px-4 py-3 font-semibold text-gray-700 whitespace-nowrap">
+                      <td class="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold text-gray-700 break-words text-xs sm:text-sm">
                         {{ spec.label }}
                       </td>
-                      <td class="px-4 py-3 text-gray-900 font-medium">
+                      <td class="px-3 sm:px-4 py-2.5 sm:py-3 text-gray-900 font-medium break-words text-xs sm:text-sm">
                         {{ spec.value }}
                       </td>
                     </tr>
@@ -587,23 +588,23 @@ useSeoMeta({
         <!-- ===== ĐÁNH GIÁ SẢN PHẨM ===== -->
         <div id="product-reviews" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <!-- Header -->
-          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-amber-50/60 to-transparent">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                <svg class="w-4.5 h-4.5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+          <div class="flex items-center justify-between gap-2 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-r from-amber-50/60 to-transparent">
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                 </svg>
               </div>
-              <h2 class="text-lg font-bold text-gray-900">Đánh giá sản phẩm</h2>
+              <h2 class="text-base sm:text-lg font-bold text-gray-900 truncate">Đánh giá sản phẩm</h2>
             </div>
-            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-amber-100 text-amber-700">
+            <span class="px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-full bg-amber-100 text-amber-700 whitespace-nowrap shrink-0">
               {{ product.reviews?.length || 0 }} đánh giá
             </span>
           </div>
 
-          <div class="p-6">
+          <div class="p-4 sm:p-6">
             <!-- Review form -->
-            <div class="mb-6 rounded-xl border border-primary-100 bg-gradient-to-r from-primary-50/50 to-white p-5">
+            <div class="mb-6 rounded-xl border border-primary-100 bg-gradient-to-r from-primary-50/50 to-white p-4 sm:p-5">
               <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div>
                   <h3 class="text-base font-bold text-gray-900">Viết đánh giá của bạn</h3>
@@ -724,22 +725,22 @@ useSeoMeta({
 
             <!-- Review list -->
             <div v-if="product.reviews?.length" class="space-y-4">
-              <div 
-                v-for="review in product.reviews" 
+              <div
+                v-for="review in product.reviews"
                 :key="review.id"
-                class="p-5 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all"
+                class="p-4 sm:p-5 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all"
               >
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                <div class="flex flex-wrap items-start gap-3 mb-3">
+                  <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
                     {{ review.user?.name?.[0]?.toUpperCase() || '?' }}
                   </div>
-                  <div class="flex-1">
-                    <p class="font-semibold text-gray-800">{{ review.user?.name || review.guest_name || 'Khách hàng' }}</p>
-                    <div class="flex items-center gap-2">
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-800 truncate">{{ review.user?.name || review.guest_name || 'Khách hàng' }}</p>
+                    <div class="flex flex-wrap items-center gap-2">
                       <div class="flex gap-0.5">
                         <template v-for="i in 5" :key="i">
-                          <svg 
-                            class="w-3.5 h-3.5" 
+                          <svg
+                            class="w-3.5 h-3.5"
                             :class="i <= review.rating ? 'text-amber-400' : 'text-gray-200'"
                             fill="currentColor" viewBox="0 0 20 20"
                           >
@@ -752,14 +753,14 @@ useSeoMeta({
                       </span>
                     </div>
                   </div>
-                  <span class="px-2.5 py-1 text-xs rounded-full bg-green-50 text-green-600 border border-green-100 font-medium">
+                  <span class="px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs rounded-full bg-green-50 text-green-600 border border-green-100 font-medium whitespace-nowrap shrink-0">
                     ✓ Đã mua hàng
                   </span>
                 </div>
-                <div class="pl-[52px]">
+                <div class="sm:pl-[52px]">
                   <p v-if="review.title" class="font-semibold text-gray-800 mb-1">{{ review.title }}</p>
-                  <p class="text-gray-600 leading-relaxed">{{ review.body }}</p>
-                  <p v-if="review.admin_reply" class="mt-3 text-sm text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
+                  <p class="text-gray-600 leading-relaxed text-sm sm:text-base break-words">{{ review.body }}</p>
+                  <p v-if="review.admin_reply" class="mt-3 text-sm text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2 break-words">
                     Phản hồi từ Lgtech: {{ review.admin_reply }}
                   </p>
                 </div>
@@ -777,9 +778,9 @@ useSeoMeta({
 
         <!-- ===== Related Products ===== -->
         <div v-if="relatedProducts.length" class="mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Sản phẩm liên quan</h2>
-            <NuxtLink :to="`/${product.category?.slug || route.params.category}`" class="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+          <div class="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+            <h2 class="text-lg sm:text-2xl font-bold text-gray-900 truncate">Sản phẩm liên quan</h2>
+            <NuxtLink :to="`/${product.category?.slug || route.params.category}`" class="text-xs sm:text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 whitespace-nowrap shrink-0">
               Xem tất cả
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </NuxtLink>
@@ -800,17 +801,17 @@ useSeoMeta({
                 >
                 <span v-else class="text-4xl text-gray-300">📦</span>
               </div>
-              <div class="p-4">
-                <h3 class="font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ related.name }}</h3>
+              <div class="p-3 sm:p-4">
+                <h3 class="font-semibold text-gray-800 text-xs sm:text-sm line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ related.name }}</h3>
                 <template v-if="(related.sale_price || related.price) > 0">
-                  <p class="text-lg font-bold text-[#c8102e]">
+                  <p class="text-sm sm:text-base font-bold text-[#c8102e] break-words">
                     {{ formatPrice(related.sale_price || related.price) }}
                   </p>
-                  <p v-if="related.sale_price" class="text-sm text-gray-400 line-through">
+                  <p v-if="related.sale_price" class="text-xs sm:text-sm text-gray-400 line-through break-words">
                     {{ formatPrice(related.price) }}
                   </p>
                 </template>
-                <p v-else class="text-lg font-bold text-gray-900">Liên hệ</p>
+                <p v-else class="text-sm sm:text-base font-bold text-gray-900">Liên hệ</p>
               </div>
             </NuxtLink>
           </div>

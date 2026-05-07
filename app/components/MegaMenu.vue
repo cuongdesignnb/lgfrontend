@@ -251,7 +251,7 @@ const { siteLogo, siteName } = useSiteSettings()
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-full"
       >
-        <div v-if="mobileOpen" class="fixed top-0 left-0 bottom-0 w-80 bg-white z-[101] overflow-y-auto lg:hidden">
+        <div v-if="mobileOpen" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-[101] overflow-y-auto lg:hidden pb-safe">
           <!-- Mobile header -->
           <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
             <NuxtLink to="/" class="flex items-center gap-2" @click="mobileOpen = false">

@@ -376,19 +376,55 @@ body {
 
 /* ========== Mobile Responsive Enhancements ========== */
 
-/* Prevent horizontal overflow on all screens */
-html, body {
-  overflow-x: hidden;
+/* `overflow-x: clip` is the safer modern alternative to `overflow-x: hidden`:
+   it doesn't create a scroll container that can disable position: sticky on
+   children. We still scope it to <html> as a final safety net while we kill
+   real overflow sources at component level. */
+html {
+  overflow-x: clip;
   -webkit-text-size-adjust: 100%;
 }
+body {
+  overflow-x: clip;
+  /* Prevent iOS zoom on form focus while still allowing user scaling */
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* Make all images responsive by default */
-img {
+/* Default media to fluid */
+img, video, iframe, svg {
   max-width: 100%;
+}
+img, video {
   height: auto;
 }
 
-/* Container mobile adjustments */
+/* Forms: inputs must be ≥ 16px font on iOS to avoid auto-zoom on focus */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Container — fluid edge padding on small screens, never overflow */
+.container {
+  width: 100%;
+  max-width: 100%;
+}
+@media (min-width: 640px) {
+  .container { max-width: 640px; }
+}
+@media (min-width: 768px) {
+  .container { max-width: 768px; }
+}
+@media (min-width: 1024px) {
+  .container { max-width: 1024px; }
+}
+@media (min-width: 1280px) {
+  .container { max-width: 1280px; }
+}
+
 @media (max-width: 640px) {
   .container {
     padding-left: 12px;
@@ -397,7 +433,7 @@ img {
 
   /* Smaller header on mobile */
   header .container .h-16 {
-    height: 52px;
+    height: 56px;
   }
 
   /* Product grid: 2 columns tighter on small phones */
@@ -405,55 +441,86 @@ img {
     gap: 8px;
   }
 
-  /* Footer spacing to clear bottom tab bar */
-  footer {
-    padding-bottom: 70px;
+  /* Prose content images / tables shouldn't overflow */
+  .prose img {
+    max-width: 100% !important;
+    height: auto !important;
   }
-
-  /* Prose content images shouldn't overflow */
-  .prose img,
   .prose table {
+    display: block;
     max-width: 100% !important;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Search overlay adjust on mobile */
-  .search-overlay .relative {
-    margin-top: 8px;
+  /* Long words break instead of forcing horizontal overflow */
+  .prose,
+  .prose p,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose li {
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 }
 
-/* Extra-small phones (< 375px) */
+/* Extra-small phones (< 375px) — tighten further */
 @media (max-width: 374px) {
   .container {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
-
-  /* Tighter product cards */
   .grid-cols-2 {
     gap: 6px;
   }
 }
 
-/* Tablet adjustments */
-@media (min-width: 641px) and (max-width: 1023px) {
-  footer {
-    padding-bottom: 70px;
+/* Mobile bottom-tab bar safe area + content padding helpers */
+:root {
+  --mobile-tab-bar-height: 62px;
+  --mobile-tab-bar-total: calc(var(--mobile-tab-bar-height) + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 1023px) {
+  /* Page content reserves space for the fixed bottom tab bar so nothing is
+     hidden behind it. Layouts use `pb-[var(--mobile-tab-bar-total)]` or
+     the .pb-mobile-tab utility below. */
+  main {
+    padding-bottom: var(--mobile-tab-bar-total);
   }
+  footer {
+    padding-bottom: var(--mobile-tab-bar-total);
+  }
+}
+.pb-mobile-tab {
+  padding-bottom: var(--mobile-tab-bar-total);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
-  /* Larger touch targets */
-  button, a {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
   /* Remove hover effects that don't make sense on touch */
   .card-hover:hover {
     transform: none;
     box-shadow: none;
   }
+  /* Ensure form controls and primary actions have adequate touch target.
+     Scope to common interactive selectors to avoid breaking inline icon
+     buttons (eg. dot pagination, tag chips) — they get a min-height
+     locally where needed. */
+  .btn-touch,
+  button[type="submit"],
+  input[type="submit"],
+  input[type="button"],
+  a.btn,
+  .form-input {
+    min-height: 44px;
+  }
 }
+
+/* Utility: opt-in horizontal scroll container that hides scrollbar visually */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

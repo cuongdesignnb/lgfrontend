@@ -227,9 +227,9 @@ useSeoMeta({
 
 <template>
   <div class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
       <!-- Breadcrumb -->
-      <nav class="mb-5 text-sm flex items-center gap-1.5 flex-wrap">
+      <nav class="mb-4 sm:mb-5 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
         <NuxtLink to="/" class="text-gray-500 hover:text-primary-600">Trang chủ</NuxtLink>
         <span class="text-gray-300">/</span>
         <template v-if="category?.parent">
@@ -242,12 +242,12 @@ useSeoMeta({
       </nav>
 
       <!-- Category Header -->
-      <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
+      <div class="bg-white rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ category?.name }}</h1>
-            <p v-if="category?.description" class="text-gray-500 mt-1">{{ category.description }}</p>
-            <p class="text-sm text-gray-400 mt-1">{{ totalProducts }} sản phẩm</p>
+          <div class="min-w-0">
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 break-words">{{ category?.name }}</h1>
+            <p v-if="category?.description" class="text-sm sm:text-base text-gray-500 mt-1 break-words">{{ category.description }}</p>
+            <p class="text-xs sm:text-sm text-gray-400 mt-1">{{ totalProducts }} sản phẩm</p>
           </div>
           <!-- Subcategory chips -->
           <div v-if="category?.children?.length" class="flex flex-wrap gap-2">
@@ -469,7 +469,7 @@ useSeoMeta({
           </div>
 
           <!-- Products Grid View -->
-          <div v-else-if="products.length > 0 && viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div v-else-if="products.length > 0 && viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
             <NuxtLink
               v-for="product in products"
               :key="product.id"
@@ -480,23 +480,23 @@ useSeoMeta({
                 <img v-if="product.images?.[0]" :src="product.images[0].url" :alt="product.name"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 >
-                <span v-else class="text-6xl">📦</span>
-                <div v-if="getDiscount(product)" class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                <span v-else class="text-5xl sm:text-6xl">📦</span>
+                <div v-if="getDiscount(product)" class="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg">
                   -{{ getDiscount(product) }}%
                 </div>
                 <div v-if="product.is_featured" class="absolute top-2 right-2 bg-amber-400 text-gray-900 text-[10px] font-bold px-1.5 py-0.5 rounded">
                   HOT
                 </div>
               </div>
-              <div class="p-4">
-                <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">{{ product.brand?.name }}</p>
-                <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>
-                <p class="text-xs text-gray-500 line-clamp-1 mb-3">{{ stripHtml(product.short_description) }}</p>
-                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
-                  <span class="text-lg font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
-                  <span v-if="product.sale_price" class="text-xs text-gray-400 line-through mb-0.5">{{ fmt(product.price) }}₫</span>
+              <div class="p-2.5 sm:p-4">
+                <p class="text-[10px] sm:text-xs text-gray-400 mb-1 uppercase tracking-wide truncate">{{ product.brand?.name }}</p>
+                <h3 class="font-semibold text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-primary-600 transition-colors break-words">{{ product.name }}</h3>
+                <p class="hidden sm:block text-xs text-gray-500 line-clamp-1 mb-3">{{ stripHtml(product.short_description) }}</p>
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-1.5 sm:gap-2 flex-wrap">
+                  <span class="text-sm sm:text-lg font-bold text-red-600 break-words">{{ fmt(product.sale_price || product.price) }}₫</span>
+                  <span v-if="product.sale_price" class="text-[10px] sm:text-xs text-gray-400 line-through mb-0.5 break-words">{{ fmt(product.price) }}₫</span>
                 </div>
-                <span v-else class="text-lg font-bold text-amber-600">Liên hệ</span>
+                <span v-else class="text-sm sm:text-lg font-bold text-amber-600">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>
@@ -509,26 +509,26 @@ useSeoMeta({
               :to="`/${category.slug}/${product.slug}`"
               class="bg-white rounded-xl border border-gray-100 hover:shadow-md hover:border-primary-200 transition-all flex overflow-hidden group"
             >
-              <div class="w-32 h-32 md:w-40 md:h-40 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
+              <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
                 <img v-if="product.images?.[0]" :src="product.images[0].url" :alt="product.name"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 >
-                <span v-else class="text-4xl">📦</span>
+                <span v-else class="text-3xl sm:text-4xl">📦</span>
               </div>
-              <div class="flex-1 p-4 flex flex-col justify-between min-w-0">
-                <div>
-                  <p class="text-xs text-gray-400 mb-0.5 uppercase tracking-wide">{{ product.brand?.name }}</p>
-                  <h3 class="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors line-clamp-1">{{ product.name }}</h3>
-                  <p class="text-sm text-gray-500 line-clamp-2">{{ stripHtml(product.short_description) }}</p>
+              <div class="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0">
+                <div class="min-w-0">
+                  <p class="text-[10px] sm:text-xs text-gray-400 mb-0.5 uppercase tracking-wide truncate">{{ product.brand?.name }}</p>
+                  <h3 class="font-semibold text-sm sm:text-base text-gray-900 mb-1 group-hover:text-primary-600 transition-colors line-clamp-2 sm:line-clamp-1 break-words">{{ product.name }}</h3>
+                  <p class="text-xs sm:text-sm text-gray-500 line-clamp-2 break-words">{{ stripHtml(product.short_description) }}</p>
                 </div>
-                <div v-if="(product.sale_price || product.price) > 0" class="flex items-center gap-3 mt-2">
-                  <span class="text-xl font-bold text-red-600">{{ fmt(product.sale_price || product.price) }}₫</span>
-                  <span v-if="product.sale_price" class="text-sm text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
-                  <span v-if="getDiscount(product)" class="bg-red-50 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-center gap-2 sm:gap-3 mt-2 flex-wrap">
+                  <span class="text-base sm:text-xl font-bold text-red-600 break-words">{{ fmt(product.sale_price || product.price) }}₫</span>
+                  <span v-if="product.sale_price" class="text-xs sm:text-sm text-gray-400 line-through break-words">{{ fmt(product.price) }}₫</span>
+                  <span v-if="getDiscount(product)" class="bg-red-50 text-red-600 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
                     -{{ getDiscount(product) }}%
                   </span>
                 </div>
-                <span v-else class="text-xl font-bold text-amber-600 mt-2">Liên hệ</span>
+                <span v-else class="text-base sm:text-xl font-bold text-amber-600 mt-2">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>
@@ -544,7 +544,7 @@ useSeoMeta({
           </div>
 
           <!-- Pagination -->
-          <div v-if="totalPages > 1" class="mt-8 flex justify-center gap-1">
+          <div v-if="totalPages > 1" class="mt-6 sm:mt-8 flex flex-wrap justify-center gap-1">
             <button
               v-for="p in totalPages"
               :key="p"

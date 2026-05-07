@@ -240,26 +240,26 @@ onMounted(() => {
 
     <!-- ============ BRAND INTRO + USP ============ -->
     <section v-if="homepageBrandIntroTitle || homepageUspItems.length" class="bg-white border-y border-[#e0d9cd]">
-      <div class="container mx-auto px-4 py-10 sm:py-14">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="container mx-auto px-3 sm:px-4 py-8 sm:py-12 lg:py-14">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
           <div v-if="homepageBrandIntroTitle" class="lg:col-span-5">
-            <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[#c8102e] mb-2">Thương hiệu</span>
-            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 leading-tight">{{ homepageBrandIntroTitle }}</h2>
-            <p v-if="homepageBrandIntroContent" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ homepageBrandIntroContent }}</p>
-            <div class="flex flex-wrap gap-3 mt-5">
-              <NuxtLink v-if="homepagePrimaryCtaLabel" :to="homepagePrimaryCtaUrl || '/san-pham'" class="bg-[#c8102e] hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+            <span class="inline-block text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#c8102e] mb-2">Thương hiệu</span>
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 leading-tight break-words">{{ homepageBrandIntroTitle }}</h2>
+            <p v-if="homepageBrandIntroContent" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line break-words">{{ homepageBrandIntroContent }}</p>
+            <div class="flex flex-wrap gap-2.5 sm:gap-3 mt-5">
+              <NuxtLink v-if="homepagePrimaryCtaLabel" :to="homepagePrimaryCtaUrl || '/san-pham'" class="bg-[#c8102e] hover:bg-red-700 text-white px-4 sm:px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
                 {{ homepagePrimaryCtaLabel }}
               </NuxtLink>
-              <NuxtLink v-if="homepageSecondaryCtaLabel" :to="homepageSecondaryCtaUrl || '/lien-he'" class="border border-gray-300 hover:border-gray-900 text-gray-800 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+              <NuxtLink v-if="homepageSecondaryCtaLabel" :to="homepageSecondaryCtaUrl || '/lien-he'" class="border border-gray-300 hover:border-gray-900 text-gray-800 px-4 sm:px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors">
                 {{ homepageSecondaryCtaLabel }}
               </NuxtLink>
             </div>
           </div>
-          <div v-if="homepageUspItems.length" class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-2 gap-4">
-            <div v-for="(usp, ui) in homepageUspItems" :key="ui" class="rounded-xl border border-gray-100 p-4 bg-[#fafaf7] hover:border-[#c8102e]/30 transition-colors">
-              <div class="text-2xl mb-2">{{ usp.icon }}</div>
-              <h3 class="font-bold text-sm text-gray-900 mb-1">{{ usp.title }}</h3>
-              <p class="text-xs text-gray-600 leading-relaxed">{{ usp.desc }}</p>
+          <div v-if="homepageUspItems.length" class="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4">
+            <div v-for="(usp, ui) in homepageUspItems" :key="ui" class="rounded-xl border border-gray-100 p-3 sm:p-4 bg-[#fafaf7] hover:border-[#c8102e]/30 transition-colors">
+              <div class="text-xl sm:text-2xl mb-1.5 sm:mb-2">{{ usp.icon }}</div>
+              <h3 class="font-bold text-xs sm:text-sm text-gray-900 mb-1 break-words">{{ usp.title }}</h3>
+              <p class="text-[11px] sm:text-xs text-gray-600 leading-relaxed break-words">{{ usp.desc }}</p>
             </div>
           </div>
         </div>
@@ -268,16 +268,16 @@ onMounted(() => {
 
     <!-- ============ TARGET CUSTOMERS ============ -->
     <section v-if="homepageTargetCustomers.length" class="bg-[#f5f0e8] border-b border-[#e0d9cd]">
-      <div class="container mx-auto px-4 py-10 sm:py-12">
-        <div class="text-center max-w-2xl mx-auto mb-8">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Phù hợp với mọi không gian</h2>
-          <p class="text-gray-600 mt-2 text-sm">LG Tech đồng hành cùng các công trình từ dân dụng tới thương mại cao cấp.</p>
+      <div class="container mx-auto px-3 sm:px-4 py-8 sm:py-10 lg:py-12">
+        <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
+          <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 break-words">Phù hợp với mọi không gian</h2>
+          <p class="text-gray-600 mt-2 text-xs sm:text-sm">LG Tech đồng hành cùng các công trình từ dân dụng tới thương mại cao cấp.</p>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div v-for="(t, ti) in homepageTargetCustomers" :key="ti" class="bg-white rounded-2xl p-5 text-center border border-gray-100 hover:shadow-md transition-shadow">
-            <div class="text-3xl mb-2">{{ t.icon }}</div>
-            <h3 class="font-bold text-gray-900 text-sm mb-1">{{ t.title }}</h3>
-            <p class="text-xs text-gray-600 leading-relaxed">{{ t.desc }}</p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div v-for="(t, ti) in homepageTargetCustomers" :key="ti" class="bg-white rounded-2xl p-3 sm:p-5 text-center border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="text-2xl sm:text-3xl mb-1.5 sm:mb-2">{{ t.icon }}</div>
+            <h3 class="font-bold text-gray-900 text-xs sm:text-sm mb-1 break-words">{{ t.title }}</h3>
+            <p class="text-[11px] sm:text-xs text-gray-600 leading-relaxed break-words">{{ t.desc }}</p>
           </div>
         </div>
       </div>
@@ -285,12 +285,12 @@ onMounted(() => {
 
     <!-- ============ APPLICATION IMAGES (real-world usage) ============ -->
     <section v-if="homepageApplicationImages.length" class="bg-white border-b border-[#e0d9cd]">
-      <div class="container mx-auto px-4 py-10 sm:py-12">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Ứng dụng thực tế</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div class="container mx-auto px-3 sm:px-4 py-8 sm:py-10 lg:py-12">
+        <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 break-words">Ứng dụng thực tế</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
           <figure v-for="(img, ii) in homepageApplicationImages" :key="ii" class="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 group">
             <img :src="resolveMediaUrl(img.image)" :alt="img.caption || ''" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <figcaption v-if="img.caption" class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs font-medium p-3">{{ img.caption }}</figcaption>
+            <figcaption v-if="img.caption" class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent text-white text-[11px] sm:text-xs font-medium p-2 sm:p-3">{{ img.caption }}</figcaption>
           </figure>
         </div>
       </div>
@@ -298,17 +298,17 @@ onMounted(() => {
 
     <!-- ============ CASE STUDIES ============ -->
     <section v-if="homepageCaseStudies.length" class="bg-[#f5f0e8] border-b border-[#e0d9cd]">
-      <div class="container mx-auto px-4 py-10 sm:py-12">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Dự án tiêu biểu</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="container mx-auto px-3 sm:px-4 py-8 sm:py-10 lg:py-12">
+        <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 break-words">Dự án tiêu biểu</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           <article v-for="(cs, ci) in homepageCaseStudies" :key="ci" class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
             <div class="aspect-[16/10] bg-gray-100 overflow-hidden">
               <img v-if="cs.image" :src="resolveMediaUrl(cs.image)" :alt="cs.title || ''" class="w-full h-full object-cover" />
             </div>
             <div class="p-4">
               <p v-if="cs.location" class="text-[11px] uppercase tracking-wider text-[#c8102e] font-bold mb-1">{{ cs.location }}</p>
-              <h3 class="font-bold text-gray-900 text-base mb-1">{{ cs.title }}</h3>
-              <p v-if="cs.description" class="text-sm text-gray-600 line-clamp-3">{{ cs.description }}</p>
+              <h3 class="font-bold text-gray-900 text-base mb-1 break-words">{{ cs.title }}</h3>
+              <p v-if="cs.description" class="text-sm text-gray-600 line-clamp-3 break-words">{{ cs.description }}</p>
             </div>
           </article>
         </div>
@@ -317,8 +317,8 @@ onMounted(() => {
 
     <!-- ============ TESTIMONIALS ============ -->
     <section v-if="homepageTestimonials.length" class="bg-white border-b border-[#e0d9cd]">
-      <div class="container mx-auto px-4 py-10 sm:py-12">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8">Khách hàng nói gì về chúng tôi</h2>
+      <div class="container mx-auto px-3 sm:px-4 py-8 sm:py-10 lg:py-12">
+        <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 text-center mb-6 sm:mb-8 break-words">Khách hàng nói gì về chúng tôi</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           <blockquote v-for="(tm, mi) in homepageTestimonials" :key="mi" class="bg-[#fafaf7] rounded-2xl p-5 border border-gray-100">
             <p class="text-sm text-gray-700 italic leading-relaxed mb-4">"{{ tm.content }}"</p>
@@ -421,27 +421,28 @@ onMounted(() => {
     <template v-for="(section, sIdx) in sections ?? []" :key="section.category.id">
       <section
         :ref="(el: any) => { if (el?.$el || el) sectionRefs[sIdx] = (el.$el || el) as HTMLElement }"
-        class="py-10 bg-[#f5f0e8] border-t border-[#e0d9cd]"
+        class="py-8 sm:py-10 bg-[#f5f0e8] border-t border-[#e0d9cd]"
       >
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-3 sm:px-4">
           <!-- Section Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-1 h-8 rounded-full bg-[#c8102e]" />
-              <div>
-                <h2 class="text-2xl font-bold text-gray-900">{{ section.category.name }}</h2>
-                <p class="text-sm text-gray-500">{{ section.product_count }} sản phẩm</p>
+          <div class="flex flex-row items-center justify-between mb-4 sm:mb-6 gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div class="w-1 h-7 sm:h-8 rounded-full bg-[#c8102e] shrink-0" />
+              <div class="min-w-0">
+                <h2 class="text-lg sm:text-2xl font-bold text-gray-900 truncate">{{ section.category.name }}</h2>
+                <p class="text-xs sm:text-sm text-gray-500">{{ section.product_count }} sản phẩm</p>
               </div>
             </div>
             <NuxtLink :to="`/${section.category.slug}`" :prefetch="false"
-              class="text-[#c8102e] hover:text-red-700 font-medium text-sm flex items-center gap-1">
-              Xem tất cả
+              class="text-[#c8102e] hover:text-red-700 font-medium text-xs sm:text-sm flex items-center gap-1 whitespace-nowrap shrink-0">
+              <span class="hidden sm:inline">Xem tất cả</span>
+              <span class="sm:hidden">Tất cả</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </NuxtLink>
           </div>
 
           <!-- Product Grid -->
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
             <NuxtLink v-for="product in section.products.slice(0, 8)" :key="product.id"
               :to="productLink(product)" :prefetch="false" data-product-card
               class="card-hover bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-[#c8102e]/30 transition-all group">
@@ -451,21 +452,21 @@ onMounted(() => {
                 <div v-if="getDiscount(product)" class="absolute top-2 left-2 bg-[#c8102e] text-white text-xs font-bold px-2 py-1 rounded-lg">-{{ getDiscount(product) }}%</div>
                 <div v-if="product.is_featured" class="absolute top-2 right-2 bg-amber-400 text-gray-900 text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</div>
               </div>
-              <div class="p-4">
-                <h3 class="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-[#c8102e] transition-colors">{{ product.name }}</h3>
-                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-2">
-                  <span class="text-base font-bold text-[#c8102e]">{{ fmt(product.sale_price || product.price) }}₫</span>
-                  <span v-if="product.sale_price" class="text-xs text-gray-400 line-through">{{ fmt(product.price) }}₫</span>
+              <div class="p-2.5 sm:p-4">
+                <h3 class="font-semibold text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1.5 sm:mb-2 group-hover:text-[#c8102e] transition-colors break-words">{{ product.name }}</h3>
+                <div v-if="(product.sale_price || product.price) > 0" class="flex items-end gap-1.5 sm:gap-2 flex-wrap">
+                  <span class="text-sm sm:text-base font-bold text-[#c8102e] break-words">{{ fmt(product.sale_price || product.price) }}₫</span>
+                  <span v-if="product.sale_price" class="text-[10px] sm:text-xs text-gray-400 line-through break-words">{{ fmt(product.price) }}₫</span>
                 </div>
-                <span v-else class="text-base font-bold text-amber-600">Liên hệ</span>
+                <span v-else class="text-sm sm:text-base font-bold text-amber-600">Liên hệ</span>
               </div>
             </NuxtLink>
           </div>
 
           <!-- View All Button -->
-          <div class="text-center mt-6">
+          <div class="text-center mt-5 sm:mt-6">
             <NuxtLink :to="`/${section.category.slug}`" :prefetch="false"
-              class="inline-block bg-[#c8102e] text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-red-700 transition-colors">
+              class="inline-block bg-[#c8102e] text-white text-sm font-semibold px-5 sm:px-6 py-2.5 rounded-lg hover:bg-red-700 transition-colors">
               Xem tất cả
             </NuxtLink>
           </div>
@@ -474,10 +475,10 @@ onMounted(() => {
     </template>
 
     <!-- ============ VIDEOS SECTION ============ -->
-    <section v-if="videos && videos.length > 0" class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
-      <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6" style="font-family: serif;">Videos</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <section v-if="videos && videos.length > 0" class="py-8 sm:py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
+      <div class="container mx-auto px-3 sm:px-4">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 break-words" style="font-family: serif;">Videos</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           <div v-for="video in videos.slice(0, 8)" :key="video.id" class="group cursor-pointer" @click="openVideo(video)">
             <div class="video-card relative">
               <img v-if="video.thumbnail" :src="video.thumbnail" :alt="video.title" class="w-full h-full object-cover" />
@@ -523,10 +524,10 @@ onMounted(() => {
     </Teleport>
 
     <!-- ============ DOWNLOAD CATALOGUE ============ -->
-    <section v-if="catalogues && catalogues.length > 0" class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
-      <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6" style="font-family: serif;">Download catalogue</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section v-if="catalogues && catalogues.length > 0" class="py-8 sm:py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
+      <div class="container mx-auto px-3 sm:px-4">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 break-words" style="font-family: serif;">Download catalogue</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div v-for="cat in catalogues" :key="cat.id" class="catalogue-card group">
             <div class="flex items-start gap-4">
               <div class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-[#e8e2d8] flex items-center justify-center">
@@ -548,18 +549,18 @@ onMounted(() => {
     </section>
 
     <!-- ============ TIN NỔI BẬT ============ -->
-    <section v-if="featuredPosts && featuredPosts.length > 0" class="py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
-      <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-[#c8102e] mb-6" style="font-family: serif;">Tin nổi bật</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <section v-if="featuredPosts && featuredPosts.length > 0" class="py-8 sm:py-12 bg-[#f5f0e8] border-t border-[#e0d9cd]">
+      <div class="container mx-auto px-3 sm:px-4">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#c8102e] mb-4 sm:mb-6 break-words" style="font-family: serif;">Tin nổi bật</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           <NuxtLink v-for="post in featuredPosts.slice(0, 4)" :key="post.id" :to="`/tin-tuc/${post.slug}`" class="group">
             <div class="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
-              <div class="relative h-44 bg-[#e8e2d8] overflow-hidden">
+              <div class="relative aspect-[16/10] sm:h-44 sm:aspect-auto bg-[#e8e2d8] overflow-hidden">
                 <img v-if="post.featured_image" :src="post.featured_image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
-              <div class="p-4">
-                <h3 class="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-[#c8102e] transition-colors">{{ post.title }}</h3>
-                <div class="flex items-center gap-2 text-xs text-gray-500">
+              <div class="p-3 sm:p-4">
+                <h3 class="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-[#c8102e] transition-colors break-words">{{ post.title }}</h3>
+                <div class="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
                   <span class="text-[#c8102e] font-medium">Tin tức</span>
                   <span>{{ new Date(post.published_at || post.created_at || new Date()).toLocaleDateString('vi-VN') }}</span>
                 </div>
