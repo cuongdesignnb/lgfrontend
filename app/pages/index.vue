@@ -129,7 +129,21 @@ async function downloadCatalogue(catalogue: any) {
   try {
     await $fetch(`${config.public.apiBase}/catalogues/${catalogue.id}/download`, { method: 'POST' })
   } catch {}
-  window.open(catalogue.file_url, '_blank')
+  window.open(resolveMediaUrl(catalogue.file_url), '_blank')
+}
+
+// Video thumbnail fallback: extract from embed code if no thumbnail set
+function getVideoThumb(video: any): string | null {
+  if (video.thumbnail) return video.thumbnail
+  if (video.source !== 'embed' || !video.embed_code) return null
+  const srcMatch = video.embed_code.match(/\bsrc\s*=\s*["']([^"']+)["']/i)
+  if (!srcMatch) return null
+  const src = srcMatch[1]
+  const yt = src.match(/(?:youtube\.com|youtube-nocookie\.com)\/embed\/([a-zA-Z0-9_-]{11})/)
+  if (yt) return `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`
+  const vm = src.match(/player\.vimeo\.com\/video\/(\d+)/)
+  if (vm) return `https://vumbnail.com/${vm[1]}.jpg`
+  return null
 }
 
 useSeoMeta({ title: 'LG Tech - Thiết bị điện cao cấp', description: 'LG Tech - Chuyên cung cấp ổ cắm, công tắc, thiết bị điện cao cấp.' })
@@ -481,8 +495,8 @@ onMounted(() => {
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           <div v-for="video in videos.slice(0, 8)" :key="video.id" class="group cursor-pointer" @click="openVideo(video)">
             <div class="video-card relative">
-              <img v-if="video.thumbnail" :src="video.thumbnail" :alt="video.title" class="w-full h-full object-cover" />
-              <div v-else class="w-full h-full bg-[#e8e2d8] flex items-center justify-center">
+              <img v-if="getVideoThumb(video)" :src="getVideoThumb(video)!" :alt="video.title" class="absolute inset-0 w-full h-full object-cover" />
+              <div v-else class="absolute inset-0 w-full h-full bg-[#e8e2d8] flex items-center justify-center">
                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
               </div>
               <div class="play-btn">
@@ -555,8 +569,8 @@ onMounted(() => {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           <NuxtLink v-for="post in featuredPosts.slice(0, 4)" :key="post.id" :to="`/tin-tuc/${post.slug}`" class="group">
             <div class="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
-              <div class="relative aspect-[16/10] sm:h-44 sm:aspect-auto bg-[#e8e2d8] overflow-hidden">
-                <img v-if="post.featured_image" :src="post.featured_image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div class="relative aspect-[16/10] bg-[#e8e2d8] overflow-hidden">
+                <img v-if="post.featured_image" :src="post.featured_image" :alt="post.title" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
               <div class="p-3 sm:p-4">
                 <h3 class="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-[#c8102e] transition-colors break-words">{{ post.title }}</h3>

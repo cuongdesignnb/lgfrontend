@@ -398,6 +398,13 @@ img, video {
   height: auto;
 }
 
+/* Thumbnails inside fixed-size containers must fill, not shrink */
+.video-card img,
+.catalogue-card img {
+  height: 100% !important;
+  object-fit: cover;
+}
+
 /* Forms: inputs must be ≥ 16px font on iOS to avoid auto-zoom on focus */
 @media (max-width: 640px) {
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),

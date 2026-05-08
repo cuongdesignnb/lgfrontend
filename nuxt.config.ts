@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       '/api/**': { proxy: (process.env.NUXT_API_PROXY_TARGET || 'http://localhost:8901') + '/api/**' },
+      '/storage/**': { proxy: (process.env.NUXT_API_PROXY_TARGET || 'http://localhost:8901') + '/storage/**' },
     },
   },
 
